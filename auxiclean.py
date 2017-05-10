@@ -122,4 +122,4 @@ while True:
 for Cours in Liste_des_cours:
     print("\nPour le cours : %s, les etudiants sont :" % Cours.Name)
     for Etudiants in Cours.Etudiants:
-        print("%s") % Etudiants[0]
+        print(Etudiants[0])
