@@ -1,0 +1,15 @@
+########################
+# Editor temporary files
+*.swp
+
+# Compiled source
+#################
+*.exe
+*.py[ocd]
+
+# Python files
+##############
+build
+dist
+*.egg-info
+.eggs
