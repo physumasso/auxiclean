@@ -13,3 +13,8 @@ build
 dist
 *.egg-info
 .eggs
+
+# test files
+# ##########
+.coverage
+cover/
