@@ -1,0 +1,9 @@
+[run]
+source = auxiclean
+
+[report]
+omit = 
+    *__init__*
+    */site-packages/*
+    */python*/*
+    pragma: no cover
