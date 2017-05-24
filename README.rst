@@ -1,3 +1,9 @@
+.. image:: https://travis-ci.org/physumasso/auxiclean.svg?branch=master
+    :target: https://travis-ci.org/physumasso/auxiclean
+.. image:: https://coveralls.io/repos/github/physumasso/auxiclean/badge.svg?branch=master
+    :target: https://coveralls.io/github/physumasso/auxiclean?branch=master
+
+
 Bienvenue sur le projet Auxi-Clean
 ==================================
 

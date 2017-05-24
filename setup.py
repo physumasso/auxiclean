@@ -5,7 +5,7 @@ import sys
 # package required
 install_packages = []
 
-develop_packages = []
+develop_packages = ["nose", "pep8", "coverage"]
 print("Installing auxiclean, the following packages are required:",
       install_packages)
 
