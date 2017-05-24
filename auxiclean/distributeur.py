@@ -1,5 +1,5 @@
-from students import Students
-from cours import Cours
+from .students import Students
+from .cours import Cours
 
 
 class Distributeur:
@@ -7,24 +7,30 @@ class Distributeur:
 
         liste_des_etudiants = self._get_etudiants(students_path)
         liste_des_cours = self._get_cours(cours_path)
-        self.selection = self.selection(liste_des_cours, liste_des_etudiants)
+        self.distribution = self.make_distribution(liste_des_cours,
+                                                   liste_des_etudiants)
+        self.print_distribution()
 
     def _get_etudiants(self, path):
         liste = []
+        print("\n#####  CANDIDATURES  #####")
         with open(path) as students_data:
             lines = students_data.readlines()
             for line in lines[1:]:
-                print(line.split(',')[1][1:])
-                print(line.split(','))
-                liste.append(Students(*line.split(',')))
+                s = Students(*line.split(','))
+                print(s.name, s.choix)
+                liste.append(s)
         return liste
 
     def _get_cours(self, path):
         liste = []
+        print("\n#####  COURS À COMBLER  #####")
         with open(path) as class_data:
             lines = class_data.readlines()
             for line in lines[1:]:
-                liste.append(Cours(*line.split(',')))
+                c = Cours(*line.split(","))
+                print(c.name, c.code)
+                liste.append(c)
         return liste
 
     def find_best(self, stat_1, stat_2):
@@ -87,7 +93,7 @@ class Distributeur:
             rang += 1
         return personnes_selectionnees
 
-    def selection(self, liste_des_cours, liste_des_etudiants):
+    def make_distribution(self, liste_des_cours, liste_des_etudiants):
         while True:
             changement = 0
             for cours in liste_des_cours:
@@ -115,14 +121,12 @@ class Distributeur:
                         cours.etudiants.append(personne)
             if changement == 0:
                 break
-
+        distribution = {}
         for cours in liste_des_cours:
-            print("\nPour le cours : %s, les etudiants sont :" % cours.name)
-            for etudiants in cours.etudiants:
-                print(etudiants[0])
+            distribution[cours.name] = [e[0] for e in cours.etudiants]
+        return distribution
 
-
-if __name__ == "__main__":
-    path_students = "../examples/students.csv"
-    path_cours = "../examples/cours.csv"
-    Distributeur(path_students, path_cours)
+    def print_distribution(self):
+        print("\n#####  DISTRIBUTION  #####")
+        for cours, liste_tpistes in self.distribution.items():
+            print("%s : %s" % (cours, str(liste_tpistes)))
