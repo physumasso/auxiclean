@@ -47,3 +47,15 @@ Contribution
 Pour contribuer au projet, simplement faire un fork du projet sur GitHub
 et soumettre des pull request ou bien contacter un des responsable
 du projet via la `PHYSUM <http://www.aephysum.umontreal.ca/>`__.
+
+Pour les développeurs, il y a des unittests qui sont écrits afin d'aider
+le développement et pour vérifier que tout marche encore. Ces tests
+sont exécutés par le CI runner Travis pour tous les Pull Requests.
+Pour les exécuter sur une machine locale, s'assurer d'avoir
+installer le module en mode 'develop'::
+  
+  $ python setup.py develop
+
+Et pour exécuter les tests, il suffit d'exécuter le script `tests.py`::
+
+  $ python tests.py
