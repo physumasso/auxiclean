@@ -33,35 +33,104 @@ class Distributeur:
                 liste.append(c)
         return liste
 
-    def Filtre(self, nombre_de_poste, liste_de_candidats, liste_des_etudiants):
+    def input_choices(self, list_equalities, nchoices, cours):
+        while True:
+            print("Des égalités sont présentes pour le cours %s." % cours)
+            print("Il faut choisir %i candidat(e)s parmis:" % nchoices)
+            for i, c in enumerate(list_equalities):
+                print("%i: %c" % (i + 1, c))
+            choices_left = nchoices
+            choices = []
+            while choices_left:
+                good_ans = False
+                while not good_ans:
+                    ans = input("Choix #%i:" % len(choices) + 1)
+                    try:
+                        choix = int(ans) - 1
+                    except ValueError:
+                        print("SVP, veuillez entrer un nombre entier.")
+                        continue
+                    else:
+                        if choix <= 0:
+                            print("SVP, veuillez entrer un nombre > 0.")
+                            continue
+                    good_ans = True
+                    choices.append(list_equalities[choix])
+                    choices_left -= 1
+            print("Vous avez choisis:")
+            for c in choices:
+                print(c)
+            good_ans = False
+            while not good_ans:
+                yes = input("Est-ce OK? [Oui/Non]:")
+                yes = yes.lower()
+                if yes not in ("oui", "o", "y", "yes",
+                               "non", "n", "no"):
+                    print("Veuillez entrer oui ou non SVP")
+                    continue
+                else:
+                    good_ans = True
+                    if yes in ("oui", "o", "y", "yes"):
+                        return choices
+                    # if No is entered here, the main loop will restart.
 
-        np.sort(liste_de_candidats)
-        Candidats_Choisis = liste_de_candidats[:nombre_de_poste]
-        Candidats_Refuses = liste_de_candidats[nombre_de_poste:]
+    def choose_candidates(self, nombre_de_poste, liste_de_candidats, cours):
+        if not nombre_de_poste:
+            # no candidate to choose.
+            return []
+        liste_provisoire = liste_de_candidats[-nombre_de_poste:]
+        liste_eq = []
+        if liste_provisoire[0] == liste_de_candidats[:-nombre_de_poste][-1]:
+            # possible equalities, we need to choose them manually
+            # first, find_equalities that might change the outcome
+            for c in liste_de_candidats:
+                if c == liste_provisoire[0]:
+                    liste_eq.append(c)
+            # now find the number of these equal candidates inside provisoire
+            same = [x for x in liste_provisoire if x == liste_provisoire[0]]
+            n = len(same)
+            for s in same:
+                liste_provisoire.remove(s)
+            # n is the number of candidates to choose in liste_eq
+            choix = self.input_choices(liste_eq, n, cours)
+            return choix + liste_provisoire
+        return liste_provisoire
 
-        for Candidats in Candidats_Refuses :
-            Candidats.dispos = str(int(Candidats.dispos) + 1)
-
-        return(Candidats_Choisis)
+    def filtre(self, nombre_de_poste, liste_de_candidats, liste_des_etudiants,
+               cours):
+        # sort the list of candidates in ordre of worst to best
+        liste_de_candidats = sorted(liste_de_candidats)
+        # choosed candidates
+        candidats_choisis = self.choose_candidates(nombre_de_poste,
+                                                   liste_de_candidats,
+                                                   cours)
+        return candidats_choisis
 
     def make_distribution(self, liste_des_cours, liste_des_etudiants):
-        while True:
-            changement = 0
+        changement = False
+        while not changement:
+            changement = False
             for cours in liste_des_cours:
                 for students in liste_des_etudiants:
                     if students.choix[0][1:] == cours.code:
-                        if students.dispos != "0":
-                            changement = 1
-                            students.dispos = str(int(students.dispos) - 1)
+                        if students.dispos:
+                            changement = True
                             cours.etudiants.append(students)
+                            # remove choice from student choices
                             students.choix.pop(0)
 
-                if (len(cours.etudiants)) > int(cours.dispos):
-                    Candidats_Choisis = self.Filtre(int(cours.dispos),
-                                            cours.etudiants,
-                                            liste_des_etudiants)
-                    cours.etudiants = Candidats_Choisis
-            if changement == 0:
+                # if number of candidates is greater than number of positions,
+                # we need to sort them out
+                if len(cours.etudiants) > cours.dispos:
+                    candidats_choisis = self.filtre(cours.dispos,
+                                                    cours.etudiants,
+                                                    liste_des_etudiants,
+                                                    cours.name)
+                    cours.etudiants = candidats_choisis
+                # for each chosen candidates, remove one from their dispos
+                for candidat in cours.etudiants:
+                    candidat.dispos -= 1
+            if not changement:
                 break
         distribution = {}
         for cours in liste_des_cours:
@@ -72,8 +141,3 @@ class Distributeur:
         print("\n#####  DISTRIBUTION  #####")
         for cours, liste_tpistes in self.distribution.items():
             print("%s : %s" % (cours, str(liste_tpistes)))
-
-if __name__ == "__main__":
-    path_students = "../examples/students.csv"
-    path_cours = "../examples/cours.csv"
-    Distributeur(path_students, path_cours)
