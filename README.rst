@@ -1,4 +1,4 @@
-.. image:: https://travis-ci.org/physumasso/auxiclean.svg?branch=master
+﻿.. image:: https://travis-ci.org/physumasso/auxiclean.svg?branch=master
     :target: https://travis-ci.org/physumasso/auxiclean
 .. image:: https://coveralls.io/repos/github/physumasso/auxiclean/badge.svg?branch=master
     :target: https://coveralls.io/github/physumasso/auxiclean?branch=master
@@ -11,7 +11,7 @@ Ce projet est une initiative des étudiants et étudiantes au département
 de physique de l'Université de Montréal afin de créer une approche
 automatisée pour l'attribution des tâches d'assistanat d'enseignement.
 
-Le code source initial a été écrit par Jérémi Tanguay (Tanjay94 sur GitHub).
+Le code source initial a été écrit par Jérémi Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__ sur GitHub).
 
 
 Installation
