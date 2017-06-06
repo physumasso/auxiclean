@@ -1,5 +1,6 @@
 import unittest
 import tempfile
+import os
 from auxiclean import Distributeur
 
 
@@ -13,26 +14,27 @@ class TestBase(unittest.TestCase):
 
     def setUp(self):
         # use temporary file to do the tests
-        self.liste_cours = tempfile.NamedTemporaryFile(mode="a")
-        self.liste_candidatures = tempfile.NamedTemporaryFile(mode="a")
-        # write cours
-        self.liste_cours.write("First line skipped\n")
-        for c, v in self.cours.items():
-            s = ",".join([c] + v) + "\n"
-            self.liste_cours.write(s)
-        self.liste_cours.seek(0)  # return at beginning of file to read
-        # write candidatures
-        self.liste_candidatures.write("First line skipped\n")
-        for name, v in self.candidatures.items():
-            s = ",".join([name] + v) + "\n"
-            self.liste_candidatures.write(s)
-        self.liste_candidatures.seek(0)
-        self.distributeur = Distributeur(self.liste_candidatures.name,
-                                         self.liste_cours.name)
+        self.tempdir = tempfile.TemporaryDirectory()
+        self.cours_path = os.path.join(self.tempdir.name, "cours.csv")
+        self.stud_path = os.path.join(self.tempdir.name, "students.csv")
+        with open(self.cours_path, "w") as f:
+            # write cours
+            f.write("First line skipped\n")
+            for c, v in self.cours.items():
+                s = ",".join([c] + v) + "\n"
+                f.write(s)
+        with open(self.stud_path, "w") as f:
+            # write candidatures
+            f.write("First line skipped\n")
+            for name, v in self.candidatures.items():
+                s = ",".join([name] + v) + "\n"
+                f.write(s)
+        self.distributeur = Distributeur(self.stud_path,
+                                         self.cours_path)
 
     def tearDown(self):
-        del self.liste_cours
-        del self.liste_candidatures
+        self.tempdir.cleanup()
+        del self.tempdir
         del self.distributeur
 
 
