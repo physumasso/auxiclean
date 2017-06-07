@@ -4,7 +4,8 @@ import os
 
 
 modules = ["auxiclean.unittests.test_coding_standards",
-           "auxiclean.unittests.test_distributeur.TestDistributeur"]
+           "auxiclean.unittests.test_distributeur.TestDistributeur",
+           "auxiclean.unittests.test_distributeur.TestSortingDistributeur"]
 
 
 def run(tests):
