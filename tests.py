@@ -5,7 +5,12 @@ import os
 
 modules = ["auxiclean.unittests.test_coding_standards",
            "auxiclean.unittests.test_distributeur.TestDistributeur",
-           "auxiclean.unittests.test_distributeur.TestSortingDistributeur"]
+           "auxiclean.unittests.test_distributeur.TestSortingDistributeur",
+           "auxiclean.unittests.test_distributeur.TestMultiplePosition",
+           "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetter",
+           "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetterButNoMoreDispo",
+           "auxiclean.unittests.test_distributeur.TestNoDispo",
+           "auxiclean.unittests.test_distributeur.TestNoSpaceInClass"]
 
 
 def run(tests):
