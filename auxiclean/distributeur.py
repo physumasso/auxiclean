@@ -2,6 +2,9 @@ from .students import Students
 from .cours import Cours
 
 
+def get_user_input(text):
+    return input(text)
+
 class Distributeur:
     def __init__(self, students_path, cours_path):
 
@@ -44,7 +47,7 @@ class Distributeur:
             while choices_left:
                 good_ans = False
                 while not good_ans:
-                    ans = input("Choix #%i:" % len(choices) + 1)
+                    ans = get_user_input("Choix #%i:" % len(choices) + 1)
                     try:
                         choix = int(ans) - 1
                     except ValueError:
@@ -62,7 +65,7 @@ class Distributeur:
                 print(c)
             good_ans = False
             while not good_ans:
-                yes = input("Est-ce OK? [Oui/Non]:")
+                yes = get_user_input("Est-ce OK? [Oui/Non]:")
                 yes = yes.lower()
                 if yes not in ("oui", "o", "y", "yes",
                                "non", "n", "no"):
