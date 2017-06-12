@@ -18,6 +18,7 @@ def run(tests):
     os.environ["NOSE_COVER_PACKAGE"] = "auxiclean"
     os.environ["NOSE_COVER_HTML"] = "1"
     os.environ["NOSE_COVER_ERASE"] = "1"
+    os.environ["NOSE_COVER_TESTS"] = "1"
     nose.main(defaultTest=tests)
 
 if __name__ == "__main__":
