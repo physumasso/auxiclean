@@ -61,8 +61,8 @@ Et pour exécuter les tests, il suffit d'exécuter le script `tests.py`::
 
   $ python tests.py
 
-Contributors
-------------
+Contributeurs
+-------------
 
 La liste de tous les contributeurs au code:
 
