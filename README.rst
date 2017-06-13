@@ -64,7 +64,7 @@ Et pour exécuter les tests, il suffit d'exécuter le script `tests.py`::
 Contributors
 ------------
 
-La liste de tous les contributeurs au code::
+La liste de tous les contributeurs au code:
 
-  - Jérémi Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__)
-  - Félix Antoine Goudreault (`fgoudreault <https://github.com/fgoudreault>`__)
+- Jérémi Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__)
+- Félix Antoine Goudreault (`fgoudreault <https://github.com/fgoudreault>`__)
