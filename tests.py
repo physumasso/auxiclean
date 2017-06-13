@@ -10,7 +10,8 @@ modules = ["auxiclean.unittests.test_coding_standards",
            "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetter",
            "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetterButNoMoreDispo",
            "auxiclean.unittests.test_distributeur.TestNoDispo",
-           "auxiclean.unittests.test_distributeur.TestNoSpaceInClass"]
+           "auxiclean.unittests.test_distributeur.TestNoSpaceInClass",
+           "auxiclean.unittests.test_distributeur.TestUserInput"]
 
 
 def run(tests):
