@@ -2,7 +2,8 @@
     :target: https://travis-ci.org/physumasso/auxiclean
 .. image:: https://coveralls.io/repos/github/physumasso/auxiclean/badge.svg?branch=master
     :target: https://coveralls.io/github/physumasso/auxiclean?branch=master
-
+.. image:: https://img.shields.io/badge/licence-MIT-blue.svg
+    :target: https://github.com/physumasso/auxiclean/blob/master/LICENCE
 
 Bienvenue sur le projet Auxi-Clean
 ==================================

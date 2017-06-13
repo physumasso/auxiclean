@@ -1,5 +1,6 @@
 from .students import Students
 from .cours import Cours
+import auxiclean.user_input as user_input
 
 
 class Distributeur:
@@ -38,20 +39,21 @@ class Distributeur:
             print("Des égalités sont présentes pour le cours %s." % cours)
             print("Il faut choisir %i candidat(e)s parmis:" % nchoices)
             for i, c in enumerate(list_equalities):
-                print("%i: %c" % (i + 1, c))
+                print("%i: %s" % (i + 1, c))
             choices_left = nchoices
             choices = []
             while choices_left:
                 good_ans = False
                 while not good_ans:
-                    ans = input("Choix #%i:" % len(choices) + 1)
+                    ans = user_input.get_user_input("Choix #%i:" %
+                                                    (len(choices) + 1))
                     try:
                         choix = int(ans) - 1
                     except ValueError:
                         print("SVP, veuillez entrer un nombre entier.")
                         continue
                     else:
-                        if choix <= 0:
+                        if choix < 0:
                             print("SVP, veuillez entrer un nombre > 0.")
                             continue
                     good_ans = True
@@ -62,7 +64,7 @@ class Distributeur:
                 print(c)
             good_ans = False
             while not good_ans:
-                yes = input("Est-ce OK? [Oui/Non]:")
+                yes = user_input.get_user_input("Est-ce OK? [Oui/Non]:")
                 yes = yes.lower()
                 if yes not in ("oui", "o", "y", "yes",
                                "non", "n", "no"):

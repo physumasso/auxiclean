@@ -1,7 +1,9 @@
 import unittest
 import tempfile
 import os
+from unittest.mock import patch
 from auxiclean import Distributeur
+from collections import OrderedDict
 
 
 class TestBase(unittest.TestCase):
@@ -16,21 +18,19 @@ class TestBase(unittest.TestCase):
         # use temporary file to do the tests
         self.tempdir = tempfile.TemporaryDirectory()
         self.cours_path = os.path.join(self.tempdir.name, "cours.csv")
-        self.stud_path = os.path.join(self.tempdir.name, "students.csv")
+        self.students_path = os.path.join(self.tempdir.name, "students.csv")
         with open(self.cours_path, "w") as f:
             # write cours
             f.write("First line skipped\n")
             for c, v in self.cours.items():
                 s = ",".join([c] + v) + "\n"
                 f.write(s)
-        with open(self.stud_path, "w") as f:
+        with open(self.students_path, "w") as f:
             # write candidatures
             f.write("First line skipped\n")
             for name, v in self.candidatures.items():
                 s = ",".join([name] + v) + "\n"
                 f.write(s)
-        self.distributeur = Distributeur(self.stud_path,
-                                         self.cours_path)
 
     def tearDown(self):
         self.tempdir.cleanup()
@@ -51,6 +51,8 @@ class TestDistributeur(TestBase):
     def test_running(self):
         # simple test that checks that both candidates receive
         # their first choice.
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"][0], "Albert A")
         self.assertEqual(dist["Astro"][0], "Claude C")
@@ -70,6 +72,8 @@ class TestSortingDistributeur(TestBase):
                               "1", "1", "0", "2", "3"]}
 
     def test_sort_by_specific_tp_experience(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"][0], "Alice")
@@ -86,6 +90,8 @@ class TestMultiplePosition(TestBase):
                                  "6", "2", "0", "2", "3"]}
 
     def test_two_class_for_one_person(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"][0], "Albert A")
@@ -106,6 +112,8 @@ class TestSecondChoiceIsBetter(TestBase):
                                  "0", "3", "3"]}
 
     def test_second_choice_beat_first_if_better(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"][0], "Albert A")
@@ -125,6 +133,8 @@ class TestSecondChoiceIsBetterButNoMoreDispo(TestBase):
                                  "0", "3", "3"]}
 
     def test_second_choice_beat_first_if_better_and_has_dispo(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"][0], "Albert A")
@@ -142,6 +152,8 @@ class TestNoDispo(TestBase):
                                  "0", "3", "3"]}
 
     def test_no_more_dispo(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"], [])
@@ -159,7 +171,68 @@ class TestNoSpaceInClass(TestBase):
                                  "0", "3", "3"]}
 
     def test_no_more_space(self):
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
         # results
         dist = self.distributeur.distribution
         self.assertEqual(dist["Electro"], [])
         self.assertEqual(dist["Astro"], [])
+
+
+@patch('auxiclean.user_input.get_user_input')
+class TestUserInput(TestBase):
+    # one course, two equal candidates
+    cours = {"Electro": ["1", "1", "1"], }
+    # ordered dict here because for python v < 3.6, dict order is not
+    # guaranteed and we want to assign albert A as choice #1
+    candidatures = OrderedDict({"Albert A": ["101", "110", "0", "0", "0", "2",
+                                             "6", "2", "0", "2", "3"],
+                                "Bernard B": ["101", "110", "0", "0", "0", "2",
+                                              "6", "2", "0", "2", "3"]})
+
+    def test_user_input_simple(self, user_input_mock):
+        # test that user input chooses first candidate over second.
+        user_input_mock.side_effect = ["1", "oui"]
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
+        dist = self.distributeur.distribution
+        self.assertEqual(dist["Electro"][0], "Albert A")
+
+    def test_user_input_NaN(self, user_input_mock):
+        # test that the code still selects the good candidates
+        # if user do not enter a number the first time
+        user_input_mock.side_effect = ["not a number", "2", "oui"]
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
+        dist = self.distributeur.distribution
+        self.assertEqual(dist["Electro"][0], "Bernard B")
+
+    def test_user_input_less_than_1(self, user_input_mock):
+        # test that the code still selects the good candidates
+        # if user enters a number less than 1
+        user_input_mock.side_effect = ["0", "2", "oui"]
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
+        dist = self.distributeur.distribution
+        self.assertEqual(dist["Electro"][0], "Bernard B")
+
+    def test_user_input_retry(self, user_input_mock):
+        # test that the code still selects the good candidates
+        # if user enters 'no' at the last step to retry selection
+        # (test when user changes its mind)
+        user_input_mock.side_effect = ["1", "no", "2", "yes"]
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
+        dist = self.distributeur.distribution
+        self.assertEqual(dist["Electro"][0], "Bernard B")
+
+    def test_user_input_wrong_retry(self, user_input_mock):
+        # test that the code still selects the good candidates
+        # if user enters neither 'yes' or 'no' at the
+        # last step to retry selection
+        # (test when user changes its mind but makes a typo)
+        user_input_mock.side_effect = ["1", "not yes or no", "N", "2", "y"]
+        self.distributeur = Distributeur(self.students_path,
+                                         self.cours_path)
+        dist = self.distributeur.distribution
+        self.assertEqual(dist["Electro"][0], "Bernard B")
