@@ -4,14 +4,14 @@ import os
 
 
 modules = ["auxiclean.unittests.test_coding_standards",
-           "auxiclean.unittests.test_distributeur.TestDistributeur",
-           "auxiclean.unittests.test_distributeur.TestSortingDistributeur",
-           "auxiclean.unittests.test_distributeur.TestMultiplePosition",
-           "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetter",
-           "auxiclean.unittests.test_distributeur.TestSecondChoiceIsBetterButNoMoreDispo",
-           "auxiclean.unittests.test_distributeur.TestNoDispo",
-           "auxiclean.unittests.test_distributeur.TestNoSpaceInClass",
-           "auxiclean.unittests.test_distributeur.TestUserInput"]
+           "auxiclean.unittests.test_selector.TestSelector",
+           "auxiclean.unittests.test_selector.TestSortingSelector",
+           "auxiclean.unittests.test_selector.TestMultiplePosition",
+           "auxiclean.unittests.test_selector.TestSecondChoiceIsBetter",
+           "auxiclean.unittests.test_selector.TestSecondChoiceIsBetterButNoMoreDispo",
+           "auxiclean.unittests.test_selector.TestNoDispo",
+           "auxiclean.unittests.test_selector.TestNoSpaceInClass",
+           "auxiclean.unittests.test_selector.TestUserInput"]
 
 
 def run(tests):

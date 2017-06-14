@@ -1,1 +1,1 @@
-from .distributeur import Distributeur
+from .selector import Selector
