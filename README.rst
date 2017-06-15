@@ -12,7 +12,7 @@ Ce projet est une initiative des étudiants et étudiantes au département
 de physique de l'Université de Montréal afin de créer une approche
 automatisée pour l'attribution des tâches d'assistanat d'enseignement.
 
-Le code source initial a été écrit par Jérémi Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__ sur GitHub).
+Le code source initial a été écrit par Jérémie Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__ sur GitHub).
 
 
 Installation
@@ -66,5 +66,5 @@ Contributeurs
 
 La liste de tous les contributeurs au code:
 
-- Jérémi Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__)
+- Jérémie Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__)
 - Félix Antoine Goudreault (`fgoudreault <https://github.com/fgoudreault>`__)
