@@ -11,7 +11,8 @@ modules = ["auxiclean.unittests.test_coding_standards",
            "auxiclean.unittests.test_selector.TestSecondChoiceIsBetterButNoMoreDispo",
            "auxiclean.unittests.test_selector.TestNoDispo",
            "auxiclean.unittests.test_selector.TestNoSpaceInClass",
-           "auxiclean.unittests.test_selector.TestUserInput"]
+           "auxiclean.unittests.test_selector.TestUserInput",
+           "auxiclean.unittests.test_selector.TestSwitch"]
 
 
 def run(tests):

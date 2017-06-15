@@ -1,6 +1,7 @@
 from .candidate import Candidate
 from .course import Course
 import auxiclean.user_input as user_input
+import copy
 
 
 class Selector:
@@ -108,15 +109,18 @@ class Selector:
         return candidates_chosen
 
     def make_distribution(self, courses_list, candidates_list):
-        change = False
-        while not change:
+        change = True
+        while change:
             change = False
             for course in courses_list:
                 for candidate in candidates_list:
                     if candidate.choices[0][1:] == course.code:
                         if candidate.disponibilities:
                             change = True
-                            course.candidates.append(candidate)
+                            # Deep copy of the candidate to compare
+                            # with future candidates
+                            stored_candidate = copy.deepcopy(candidate)
+                            course.candidates.append(stored_candidate)
                             # remove choice from student choices
                             candidate.choices.pop(0)
 
@@ -128,8 +132,10 @@ class Selector:
                                                   course.name)
                     course.candidates = candidates_chosen
                 # for each chosen candidates, remove one from their dispos
-                for candidate in course.candidates:
-                    candidate.disponibilities -= 1
+                for chosen_candidate in course.candidates:
+                    for candidates in candidates_list:
+                        if candidates.name == chosen_candidate.name:
+                            candidates.disponibilities -= 1
             if not change:
                 break
         distribution = {}

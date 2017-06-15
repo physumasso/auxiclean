@@ -179,6 +179,25 @@ class TestNoSpaceInClass(TestBase):
         self.assertEqual(dist["Astro"], [])
 
 
+class TestSwitch(TestBase):
+    # two different courses for two person
+    courses = {"Electro": ["1", "1", "1"],
+               "Astro": ["10", "1", "1"]}
+    # no space in class so nobody gets chosen (for second showing)
+    candidates = {"Albert A": ["101", "410", "0", "0", "0", "2",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["210", "201", "0", "0", "0", "2", "2", "2",
+                               "2", "2", "2"]}
+
+    def test_switch(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
+        self.assertEqual(dist["Astro"], ["Albert A"])
+
+
 @patch('auxiclean.user_input.get_user_input')
 class TestUserInput(TestBase):
     # one course, two equal candidates
