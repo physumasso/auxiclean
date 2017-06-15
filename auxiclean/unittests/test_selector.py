@@ -183,7 +183,8 @@ class TestSwitch(TestBase):
     # two different courses for two person
     courses = {"Electro": ["1", "1", "1"],
                "Astro": ["10", "1", "1"]}
-    # no space in class so nobody gets chosen (for second showing)
+    # Second choice of 1 candidate is better than another one's first
+    # So they switch places
     candidates = {"Albert A": ["101", "410", "0", "0", "0", "2",
                                "2", "2", "2", "2", "2"],
                   "Claude C": ["210", "201", "0", "0", "0", "2", "2", "2",
@@ -196,6 +197,92 @@ class TestSwitch(TestBase):
         dist = self.selector.distribution
         self.assertEqual(dist["Electro"], ["Claude C"])
         self.assertEqual(dist["Astro"], ["Albert A"])
+
+
+class TestCourseGiven(TestBase):
+    # one course for two person
+    courses = {"Electro": ["1", "1", "1"]}
+    # If number of tp specific are equal, we look at total tp
+    candidates = {"Albert A": ["101", "0", "0", "0", "0", "1",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["101", "0", "0", "0", "0", "1", "3", "2",
+                               "2", "2", "2"]}
+
+    def test_course_given(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
+
+
+class TestScholarity(TestBase):
+    # one course for two person
+    courses = {"Electro": ["1", "1", "1"]}
+    # If number of total tp are equal, we look at scholarity
+    candidates = {"Albert A": ["101", "0", "0", "0", "0", "1",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["101", "0", "0", "0", "0", "1", "2", "3",
+                               "2", "2", "2"]}
+
+    def test_scholarity(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
+
+
+class TestNobel(TestBase):
+    # one course for two person
+    courses = {"Electro": ["1", "1", "1"]}
+    # If scholarity is equal, we look at number of nobels won
+    candidates = {"Albert A": ["101", "0", "0", "0", "0", "1",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["101", "0", "0", "0", "0", "1", "2", "2",
+                               "3", "2", "2"]}
+
+    def test_nobel(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
+
+
+class TestProgram(TestBase):
+    # one course for two person
+    courses = {"Electro": ["1", "1", "1"]}
+    # If number of nobels won are equal, we look at program of research
+    candidates = {"Albert A": ["101", "0", "0", "0", "0", "1",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["101", "0", "0", "0", "0", "1", "2", "2",
+                               "2", "3", "2"]}
+
+    def test_program(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
+
+
+class TestGPA(TestBase):
+    # one course for two person
+    courses = {"Electro": ["1", "1", "1"]}
+    # If both candidates are studying in related program,
+    # we look at their GPA
+    candidates = {"Albert A": ["101", "0", "0", "0", "0", "1",
+                               "2", "2", "2", "2", "2"],
+                  "Claude C": ["101", "0", "0", "0", "0", "1", "2", "2",
+                               "2", "2", "3"]}
+
+    def test_gpa(self):
+        self.selector = Selector(self.candidates_path,
+                                 self.courses_path)
+        # results
+        dist = self.selector.distribution
+        self.assertEqual(dist["Electro"], ["Claude C"])
 
 
 @patch('auxiclean.user_input.get_user_input')

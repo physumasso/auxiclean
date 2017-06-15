@@ -12,7 +12,12 @@ modules = ["auxiclean.unittests.test_coding_standards",
            "auxiclean.unittests.test_selector.TestNoDispo",
            "auxiclean.unittests.test_selector.TestNoSpaceInClass",
            "auxiclean.unittests.test_selector.TestUserInput",
-           "auxiclean.unittests.test_selector.TestSwitch"]
+           "auxiclean.unittests.test_selector.TestSwitch",
+           "auxiclean.unittests.test_selector.TestCourseGiven",
+           "auxiclean.unittests.test_selector.TestScholarity",
+           "auxiclean.unittests.test_selector.TestNobel",
+           "auxiclean.unittests.test_selector.TestProgram",
+           "auxiclean.unittests.test_selector.TestGPA"]
 
 
 def run(tests):
