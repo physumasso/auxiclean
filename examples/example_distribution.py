@@ -1,6 +1,6 @@
-from auxiclean import Distributeur
+from auxiclean import Selector
 
 
 path_students = "students.csv"
 path_cours = "cours.csv"
-d = Distributeur(path_students, path_cours)
+s = Selector(path_students, path_cours)
