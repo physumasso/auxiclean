@@ -17,7 +17,8 @@ modules = ["auxiclean.unittests.test_coding_standards",
            "auxiclean.unittests.test_selector.TestScholarity",
            "auxiclean.unittests.test_selector.TestNobel",
            "auxiclean.unittests.test_selector.TestProgram",
-           "auxiclean.unittests.test_selector.TestGPA"]
+           "auxiclean.unittests.test_selector.TestGPA",
+           "auxiclean.unittests.test_excel_manager.TestExcelManager"]
 
 
 def run(tests):

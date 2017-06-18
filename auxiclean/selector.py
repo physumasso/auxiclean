@@ -1,39 +1,39 @@
-from .candidate import Candidate
-from .course import Course
+from .candidate import CourseCandidate
+from .managers import ExcelFileManager
 import auxiclean.user_input as user_input
 import copy
 
 
 class Selector:
-    def __init__(self, candidates_path, courses_path):
+    def __init__(self, path):
+        # load courses and candidates from excel file
+        self.excel_mgr = ExcelFileManager(path)
+        courses = self.excel_mgr.courses
+        candidates = self.excel_mgr.candidates
+        # print courses and candidates
+        self.print_courses(courses)
+        self.print_candidates(candidates)
+        # make distribution
+        self.distribution = self.make_distribution(courses, candidates)
+        # print distribution
+        self.print_distribution(self.distribution)
+        # write distribution into same excel file
+        self.excel_mgr.write_distribution(self.distribution)
 
-        candidates_list = self._get_candidates(candidates_path)
-        courses_list = self._get_courses(courses_path)
-        self.distribution = self.make_distribution(courses_list,
-                                                   candidates_list)
-        self.print_distribution()
-
-    def _get_candidates(self, path):
-        candidates = []
+    def print_candidates(self, candidates_list):
         print("\n#####  CANDIDATURES  #####")
-        with open(path) as students_data:
-            lines = students_data.readlines()
-            for line in lines[1:]:
-                s = Candidate(*line.split(','))
-                print(s.name, s.choices)
-                candidates.append(s)
-        return candidates
+        for candidate in candidates_list:
+            print("%s - %s" % (candidate.name, candidate.choices))
 
-    def _get_courses(self, path):
-        courses = []
+    def print_courses(self, courses_list):
         print("\n#####  COURS A COMBLER  #####")
-        with open(path) as class_data:
-            lines = class_data.readlines()
-            for line in lines[1:]:
-                c = Course(*line.split(","))
-                print(c.name, c.code)
-                courses.append(c)
-        return courses
+        for course in courses_list:
+            print("%s - %s" % (course.name, course.code))
+
+    def print_distribution(self, distribution):
+        print("\n#####  DISTRIBUTION  #####")
+        for course, candidates_list in distribution.items():
+            print("%s : %s" % (course, str(candidates_list)))
 
     def input_choices(self, list_equalities, nchoices, course):
         while True:
@@ -114,15 +114,19 @@ class Selector:
             change = False
             for course in courses_list:
                 for candidate in candidates_list:
-                    if candidate.choices[0][1:] == course.code:
-                        if candidate.disponibilities:
-                            change = True
-                            # Deep copy of the candidate to compare
-                            # with future candidates
-                            stored_candidate = copy.deepcopy(candidate)
-                            course.candidates.append(stored_candidate)
-                            # remove choice from student choices
-                            candidate.choices.pop(0)
+                    if not len(candidate.choices):
+                        # if candidates has no more choices, skip
+                        continue
+                    c = candidate
+                    if c.choices[0] == course.code and c.disponibilities > 0:
+                        change = True
+                        # Deep copy of the candidate to compare
+                        # with future candidates
+                        cp = copy.deepcopy(candidate)
+                        stored_candidate = CourseCandidate(cp, course)
+                        course.candidates.append(stored_candidate)
+                        # remove choice from student choices
+                        candidate.choices.pop(0)
 
                 # if number of candidates is greater than number of positions,
                 # we need to sort them out
@@ -133,17 +137,12 @@ class Selector:
                     course.candidates = candidates_chosen
                 # for each chosen candidates, remove one from their dispos
                 for chosen_candidate in course.candidates:
-                    for candidates in candidates_list:
-                        if candidates.name == chosen_candidate.name:
-                            candidates.disponibilities -= 1
+                    for candidate in candidates_list:
+                        if candidate.name == chosen_candidate.name:
+                            candidate.disponibilities -= 1
             if not change:
                 break
         distribution = {}
         for course in courses_list:
-            distribution[course.name] = [c.name for c in course.candidates]
+            distribution[course.code] = course.candidates
         return distribution
-
-    def print_distribution(self):
-        print("\n#####  DISTRIBUTION  #####")
-        for course, candidates_list in self.distribution.items():
-            print("%s : %s" % (course, str(candidates_list)))
