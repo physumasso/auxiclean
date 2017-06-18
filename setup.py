@@ -3,7 +3,8 @@ import sys
 
 
 # package required
-install_packages = []
+install_packages = ["openpyxl",  # to manage excel spreadsheets
+                    ]
 
 develop_packages = ["nose", "pep8", "coverage"]
 print("Installing auxiclean, the following packages are required:",
