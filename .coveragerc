@@ -7,3 +7,5 @@ omit =
     */site-packages/*
     */python*/*
     pragma: no cover
+    *_version.py*
+    *versioneer.py*
