@@ -1,6 +1,11 @@
 ########################
 # Editor temporary files
 *.swp
+.~lock*
+
+# excel files
+# ###########
+*.xlsx
 
 # Compiled source
 #################
