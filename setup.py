@@ -1,5 +1,6 @@
 from setuptools import setup
 import sys
+import versioneer
 
 
 # package required
@@ -17,8 +18,9 @@ if "develop" in sys.argv:
 
 
 setup(name="auxiclean",
-      version="0.0.1",
+      version=versioneer.get_version(),
       description="Distributeur de taches d'auxiliariat d'enseignement",
       url="https://github.com/physumasso/auxiclean",
       install_requires=install_packages,
+      cmdclass=versioneer.get_cmdclass()
       )
