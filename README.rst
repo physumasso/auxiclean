@@ -30,17 +30,29 @@ Pour installer le module, il faut executer le script d'installation `setup.py`::
 
   $ python setup.py install
 
-Pour une installation de développement, utiliser l'argument `develop` au lieu
-de `install` car d'autres dépendances sont nécéssaires afin de faire rouler les
+Pour une installation de développement, utiliser l'argument ``develop`` au lieu
+de ``install`` car d'autres dépendances sont nécéssaires afin de faire rouler les
 tests.
 
 Fonctionnement
 --------------
 
-Le code fonctionne en lui donnant deux fichiers Excel: un contenant les
+Le code fonctionne en lui donnant un fichiers Excel possédant deux feuilles: une contenant les
 données de toutes les candidatures et l'autre contenant les détails sur les
-cours à attribuer.
+cours à attribuer. Un exemple d'un tel fichier est donné dans le répertoire ``exemples/exemples.xlsx``.
+**N.B.: Pour l'instant, le format de ce fichier d'exemple doit absolument être respecté, c'est-à-dire
+que les titres des colonnes et les noms des feuilles ne doivent pas changer.**
+Une fois ce fichier créer, il suffit d'appeler la classe ``Selector`` de cette façon
 
+.. code-block:: python
+
+  from auxiclean import Selector
+  
+  chemin = "chemin/vers/le/fichier/excel.xslx"
+  s = Selector(chemin)
+  
+L'appel à cette classe fera l'attribution des postes d'auxiliaires et l'écrira dans le même
+fichier Excel qu'au départ, dans une nouvelle feuille.
 
 Contribution
 ------------
