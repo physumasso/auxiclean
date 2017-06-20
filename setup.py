@@ -1,4 +1,5 @@
 from setuptools import setup
+import pip
 import sys
 import versioneer
 
@@ -16,6 +17,11 @@ if "develop" in sys.argv:
            "  purposes:"), develop_packages)
     install_packages += develop_packages
 
+# if on windows, there is a bug when installing coverage with setuptools.
+# installing it with pip before setup fixes this.
+if sys.platform == "win32" and "coverage" in install_packages:
+    pip.main(["install", "coverage"])
+    install_packages.remove("coverage")
 
 setup(name="auxiclean",
       version=versioneer.get_version(),
