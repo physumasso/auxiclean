@@ -21,7 +21,7 @@ class Candidate:
         self.discipline = discipline
         self.gpa = float(gpa)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return self.name
 
 
