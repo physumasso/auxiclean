@@ -1,0 +1,20 @@
+build: false
+
+environment:
+  matrix:
+    - PYTHON_VERSION: 3.6
+      MINICONDA: C:\Miniconda36
+init:
+  - "ECHO %PYTHON_VERSION% %MINICONDA%"
+install:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"   
+  - conda update --yes conda
+  - conda create -y -q -n test-environment python=%PYTHON_VERSION%
+  - activate test-environment
+  - python setup.py develop
+test_script:
+  - python tests.py
+branches:
+  only:
+  - master
+  - develop
