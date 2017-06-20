@@ -1,9 +1,12 @@
 ﻿.. image:: https://img.shields.io/travis/physumasso/auxiclean.svg?maxAge=600?branch=master
     :target: https://travis-ci.org/physumasso/auxiclean
+.. image:: https://img.shields.io/appveyor/ci/fgoudreault/auxiclean/master.svg?maxAge=600
+    :target: https://ci.appveyor.com/project/fgoudreault/auxiclean/
 .. image:: https://img.shields.io/coveralls/physumasso/auxiclean.svg?maxAge=600?branch=master
     :target: https://coveralls.io/github/physumasso/auxiclean?branch=master
 .. image:: https://img.shields.io/badge/licence-MIT-blue.svg
     :target: https://github.com/physumasso/auxiclean/blob/master/LICENCE
+
 
 Bienvenue sur le projet Auxi-Clean
 ==================================
