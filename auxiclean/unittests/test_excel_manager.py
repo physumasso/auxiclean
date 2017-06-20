@@ -2,6 +2,7 @@ from .test_selector import TestBase
 from openpyxl import load_workbook
 from auxiclean import Selector
 from collections import OrderedDict
+import warnings
 
 
 class TestExcelManager(TestBase):
@@ -52,3 +53,29 @@ class TestExcelManager(TestBase):
                 self.assertEqual(row[1].value, "Albert A")
             else:
                 self.assertEqual(row[1].value, "Claude C")
+
+    def test_distribution_sheet_already_exists(self):
+        # load workbook and add a distribution cheet
+        wb = load_workbook(self.data_path)
+        # create distribution sheet
+        ws = wb.create_sheet("Distribution")
+        safe_string = "Check that this string is not erased."
+        ws["A1"].value = safe_string
+        wb.save(self.data_path)
+        del wb
+        # call selector and check that already existing sheet is not erased
+        # also check that a user warning is raised
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            self.selector = Selector(self.data_path)
+            # check a warning is raised (only one)
+            self.assertEqual(len(w), 1)
+            self.assertIn("Distribution sheet already exists",
+                          str(w[-1].message))
+        # reload wb
+        wb = load_workbook(self.data_path)
+        self.assertIn("Distribution1", wb.sheetnames)
+        # check that the previous sheet was not overridden
+        ws = wb["Distribution"]
+        self.assertEqual(ws["A1"].value, safe_string)
+        del wb
