@@ -58,6 +58,54 @@ Une fois ce fichier créer, il suffit d'appeler la classe ``Selector`` de cette 
 L'appel à cette classe fera l'attribution des postes d'auxiliaires et l'écrira dans le même
 fichier Excel qu'au départ, dans une nouvelle feuille.
 
+
+Format du Fichier Excel
+***********************
+
+Voici les catégories à remplir pour un cours: 
+
+ - Sigle (e.g.: 'PHY3131', 'PHY1441', ...). Si un cours possède plusieurs types de postes
+   (des postes avec différentes tâches et nombre d'heures), il faut créer deux cours
+   différents dans le fichier excel. Par exemple, 'PHY1441-30' serait le cours désigné
+   comme un poste à 30 heures alors que 'PHY1441-90' serait un poste à 90 heures.
+   N'importe quelle syntaxe fera l'affaire, en autant que ce soit la même que le sigle
+   des cours dans les candidatures (tout doit être consistant).
+ - Titre du cours.
+ - Nombre de postes.
+ - Discipline: la discipline du cours (par exemple pour PHY2710 - Astrophysique et Astronomie,
+   la discipline serait 'astrophysique'). Pour des cours sans discipline bien définie,
+   il faut spécifier 'générale' ou laisser le champ vide. Si un cours est dans la discipline
+   'générale', aucune candidature ne sera favorisée selon le critère de la discipline de
+   recherche pour ce cours.
+ 
+Catégories pour la feuilles de candidatures:
+
+  - Nom (peut être seulement le matricule ou tout autre chaîne de caractère qui permet
+    de différencier les candidatures).
+  - Maximum: le nombre de postes maximum désiré par la candidature.
+  - Cycle: le cycle d'étude de la candidature (1, 2 ou 3).
+  - Cours donnés: la liste de tous les sigles des cours donnés par la candidatures.
+    Chaque sigle doit être séparé par une virgule (,). Par exemple, si une candidature aurait
+    donné le cours 'PHY1441-30' à deux reprises ainsi que 'PHY3131' à une reprise,
+    la case serait remplie de cette façon: 'PHY1441-30, PHY1441-30, PHY3131'.
+  - Nobels: Le nombre de prix 'petit nobels' gagnés par la candidatures.
+  - Discipline: à la manière des cours, ceci serait la discipline dans laquelle
+    la candidature fait ses recherches. Si aucune discipline particulière ne peut être
+    spécifiée, laisser le champ vide ou le remplir avec 'générale'. Si un cours pour
+    lequel une candidature de discipline 'générale' applique
+    possède une discipline particulière (non 'générale'),
+    et pour lequel d'autres candidatures à ce cours sont dans la même discipline. Alors,
+    ces autres candidatures seront favorisées par rapport à la candidature 'générale'.
+    Par exemple, si une candidature est dans la discipline 'générale' applique pour
+    un cours d'astrophysique, alors toute autre candidature dont la discipline est
+    l'astrophysique sera favorisée par rapport à la première candidature selon ce critère.
+  - Cote Z: la cote Z de la candidature.
+  - Choix: La liste des cours désirés par une candidature selon la même syntaxe que la
+    catégorie des 'Cours donnés'.
+
+Dans tous les cas, les titres des colonnes des feuilles du fichier excel ne doivent
+pas changer du même que les titres des feuilles.
+
 Contribution
 ------------
 
