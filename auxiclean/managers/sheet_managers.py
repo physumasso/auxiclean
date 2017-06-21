@@ -39,7 +39,7 @@ class CoursesSheetManager(BaseSheetManager):
                  for label, cell in zip(titles, course)}
             courses.append(d)
         return [Course(x["titre du cours"],
-                       x["sigle"].strip("PHY"),
+                       x["sigle"],
                        x["nombre de postes"],
                        x["discipline"]) for x in courses]
 
