@@ -6,7 +6,8 @@
     :target: https://coveralls.io/github/physumasso/auxiclean?branch=master
 .. image:: https://img.shields.io/badge/licence-MIT-blue.svg
     :target: https://github.com/physumasso/auxiclean/blob/master/LICENCE
-
+.. image:: https://img.shields.io/github/release/physumasso/auxiclean.svg?maxAge=600
+    :target: https://github.com/physumasso/auxiclean/releases
 
 Bienvenue sur le projet Auxi-Clean
 ==================================
