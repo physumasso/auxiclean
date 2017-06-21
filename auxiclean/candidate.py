@@ -17,9 +17,9 @@ class Candidate:
         self.disponibilities = int(disponibilities)
         self.courses_given = courses_given
         self.scolarity = int(scolarity)
-        self.nobels = int(nobels)
-        self.discipline = discipline
-        self.gpa = float(gpa)
+        self.nobels = int(nobels) if nobels is not None else 0
+        self.discipline = discipline if discipline is not None else "générale"
+        self.gpa = float(gpa) if gpa is not None else None
 
     def __repr__(self):  # pragma: no cover
         return self.name
@@ -55,14 +55,22 @@ class CourseCandidate:
         for attribute in PRIORITIES:
             attr1 = getattr(self, attribute)
             attr2 = getattr(candidate2, attribute)
+            print(attribute)
+            if attr1 is None or attr2 is None:
+                # don't compare if something is missing
+                print("continue")
+                continue
             if attr1 < attr2:
                 # lesser
+                print("lesser")
                 return True
             if attr1 > attr2:
                 # greater
+                print("greater")
                 return False
             # if we are here, attributes are equal, continue in the priorities
         # if we are here, candidates are perfectly equals
+        print("final")
         return False
 
     def __eq__(self, candidate2):
