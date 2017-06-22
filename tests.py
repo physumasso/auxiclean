@@ -1,24 +1,36 @@
-import sys
 import nose
 import os
 
 
-modules = ["auxiclean.unittests.test_coding_standards",
-           "auxiclean.unittests.test_selector.TestSelector",
-           "auxiclean.unittests.test_selector.TestSortingSelector",
-           "auxiclean.unittests.test_selector.TestMultiplePosition",
-           "auxiclean.unittests.test_selector.TestSecondChoiceIsBetter",
-           "auxiclean.unittests.test_selector.TestSecondChoiceIsBetterButNoMoreDispo",
-           "auxiclean.unittests.test_selector.TestNoDispo",
-           "auxiclean.unittests.test_selector.TestNoSpaceInClass",
-           "auxiclean.unittests.test_selector.TestUserInput",
-           "auxiclean.unittests.test_selector.TestSwitch",
-           "auxiclean.unittests.test_selector.TestCourseGiven",
-           "auxiclean.unittests.test_selector.TestScholarity",
-           "auxiclean.unittests.test_selector.TestNobel",
-           "auxiclean.unittests.test_selector.TestProgram",
-           "auxiclean.unittests.test_selector.TestGPA",
-           "auxiclean.unittests.test_excel_manager.TestExcelManager"]
+common = "auxiclean.unittests."
+
+mods = {"test_coding_standards": ["", ],
+        "test_selector.": ["TestSelector",
+                           "TestSortingSelector",
+                           "TestMultiplePosition",
+                           "TestSecondChoiceIsBetter",
+                           "TestSecondChoiceIsBetterButNoMoreDispo",
+                           "TestNoDispo",
+                           "TestNoSpaceInClass",
+                           "TestUserInput",
+                           "TestSwitch",
+                           "TestCourseGiven",
+                           "TestScholarity",
+                           "TestNobel",
+                           "TestProgram",
+                           "TestGPA", ],
+        "test_excel_manager.": ["TestExcelManager",
+                                "TestExcelCandidateChoiceError", ],
+        "test_course.": ["TestCourseRaise",
+                         "TestCourseNoName",
+                         "TestCourseNoDiscipline", ],
+        "test_candidate.": ["TestCandidateNoGPA", ],
+        }
+
+modules = []
+for test_module, test_list in mods.items():
+    for test_class in test_list:
+        modules.append(common + test_module + test_class)
 
 
 def run(tests):
@@ -28,6 +40,7 @@ def run(tests):
     os.environ["NOSE_COVER_ERASE"] = "1"
     os.environ["NOSE_COVER_TESTS"] = "1"
     nose.main(defaultTest=tests)
+
 
 if __name__ == "__main__":
     run(modules)
