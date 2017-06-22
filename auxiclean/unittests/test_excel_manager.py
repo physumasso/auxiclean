@@ -79,3 +79,34 @@ class TestExcelManager(TestBase):
         ws = wb["Distribution"]
         self.assertEqual(ws["A1"].value, safe_string)
         del wb
+
+
+class TestExcelCandidateChoiceError(TestBase):
+    # two different courses
+    courses = OrderedDict({"Electro": {"code": "1441",
+                                       "disponibilities": 1,
+                                       "discipline": "générale"},
+                           "Astro": {"code": "2710",
+                                     "disponibilities": 1,
+                                     "discipline": "générale"}})
+    # two candidates each applying for a different course. No conflict
+    # one of a candidate's choice not in the course list.
+    candidates = {"Albert A": {"maximum": 2,
+                               "scolarity": 2,
+                               "courses given": ["1441", "2710", "2710",
+                                                 "2710", "2710", "1620"],
+                               "nobels": 0,
+                               "discipline": "générale",
+                               "choices": ["1441", "1234"],  # not in courses
+                               "gpa": 2.6},
+                  "Claude C": {"maximum": 2,
+                               "scolarity": 3,
+                               "courses given": ["1651", "3131"],
+                               "nobels": 0,
+                               "discipline": "générale",
+                               "choices": ["2710", ],
+                               "gpa": 3.0}}
+
+    def test_raise_choice_error(self):
+        with self.assertRaises(ValueError):
+            self.selector = Selector(self.data_path)

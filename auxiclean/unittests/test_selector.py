@@ -16,6 +16,7 @@ class TestBase(unittest.TestCase):
     candidates = {}
 
     def setUp(self):
+        self.selector = None
         # use temporary file to do the tests
         self.tempdir = tempfile.TemporaryDirectory()
         self.data_path = os.path.join(self.tempdir.name,
