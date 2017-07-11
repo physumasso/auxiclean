@@ -59,6 +59,10 @@ class Selector:
             # n is the number of candidates to choose in liste_eq
             choices = user_input.input_choices(eq_list, n, course,
                                                master=self.master)
+            if len(choices) != n:
+                # something went wrong, raise error.
+                raise ValueError("We were expecting %i choices but"
+                                 " received %i instead..." % (n, len(choices)))
             return choices + temp_list
         return temp_list
 

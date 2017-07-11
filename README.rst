@@ -61,8 +61,8 @@ python:
 
   from auxiclean import Selector
 
-  chemin = "chemin/vers=le/fichier/excel.xsls"
-  s = Selector(chemin)
+  chemin = "chemin/vers/le/fichier/excel.xslx"
+  Selector(chemin)
 
 
 L'appel à la classe ``Selector`` fera l'attribution des postes d'auxiliaires d'enseignement
