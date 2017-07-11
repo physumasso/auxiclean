@@ -47,7 +47,7 @@ cours à attribuer. Un exemple d'un tel fichier est donné dans le répertoire `
 **N.B.: Pour l'instant, le format de ce fichier d'exemple doit absolument être respecté, c'est-à-dire
 que les titres des colonnes et les noms des feuilles ne doivent pas changer.**
 Une fois ce fichier crée, il suffit d'exécuter le script ``run.py`` qui fera apparaître une
-interface graphique pour sélectionner le fichier::
+interface graphique pour sélectionner le fichier et cliquer sur le bouton **Exécuter**::
 
   $ python run.py
 
