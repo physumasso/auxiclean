@@ -1,3 +1,7 @@
 from auxiclean.browser import Browser
+import tkinter as tk
 
-Browser()
+
+root = tk.Tk()
+b = Browser(root)
+root.mainloop()
