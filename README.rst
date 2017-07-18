@@ -46,17 +46,28 @@ données de toutes les candidatures et l'autre contenant les détails sur les
 cours à attribuer. Un exemple d'un tel fichier est donné dans le répertoire ``exemples/exemples.xlsx``.
 **N.B.: Pour l'instant, le format de ce fichier d'exemple doit absolument être respecté, c'est-à-dire
 que les titres des colonnes et les noms des feuilles ne doivent pas changer.**
-Une fois ce fichier créer, il suffit d'appeler la classe ``Selector`` de cette façon
+Une fois ce fichier crée, il suffit d'exécuter le script ``run.py`` qui fera apparaître une
+interface graphique pour sélectionner le fichier et cliquer sur le bouton **Exécuter**::
+
+  $ python run.py
+
+**Bien important de fermer le fichier excel avant
+d'exécuter le script run.py, sinon la sélection ne sera pas sauvegardée dans le fichier
+excel.**
+Alternativement, il est possible d'exécuter la sélection à partir d'un simple script
+python:
 
 .. code-block:: python
 
   from auxiclean import Selector
-  
+
   chemin = "chemin/vers/le/fichier/excel.xslx"
-  s = Selector(chemin)
-  
-L'appel à cette classe fera l'attribution des postes d'auxiliaires et l'écrira dans le même
-fichier Excel qu'au départ, dans une nouvelle feuille.
+  Selector(chemin)
+
+
+L'appel à la classe ``Selector`` fera l'attribution des postes d'auxiliaires d'enseignement
+et écrira la sélection dans le même fichier (si le fichier excel n'est pas ouvert), dans une
+nouvelle feuille de calcul.
 
 
 Format du Fichier Excel

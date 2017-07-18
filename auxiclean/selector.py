@@ -2,10 +2,14 @@ from .candidate import CourseCandidate
 from .managers import ExcelFileManager
 import auxiclean.user_input as user_input
 import copy
+import logging
 
 
 class Selector:
-    def __init__(self, path):
+    def __init__(self, path, master=None):
+        self.logger = logging.getLogger("auxiclean.selector")
+        self.logger.setLevel(logging.INFO)
+        self.master = master  # if in a GUI
         # load courses and candidates from excel file
         self.excel_mgr = ExcelFileManager(path)
         courses = self.excel_mgr.courses
@@ -21,61 +25,19 @@ class Selector:
         self.excel_mgr.write_distribution(self.distribution)
 
     def print_candidates(self, candidates_list):
-        print("\n#####  CANDIDATURES  #####")
+        self.logger.info("\n#####  CANDIDATURES  #####")
         for candidate in candidates_list:
-            print("%s - %s" % (candidate.name, candidate.choices))
+            self.logger.info("%s - %s" % (candidate.name, candidate.choices))
 
     def print_courses(self, courses_list):
-        print("\n#####  COURS A COMBLER  #####")
+        self.logger.info("\n#####  COURS A COMBLER  #####")
         for course in courses_list:
-            print("%s - %s" % (course.name, course.code))
+            self.logger.info("%s - %s" % (course.name, course.code))
 
     def print_distribution(self, distribution):
-        print("\n#####  DISTRIBUTION  #####")
+        self.logger.info("\n#####  DISTRIBUTION  #####")
         for course, candidates_list in distribution.items():
-            print("%s : %s" % (course, str(candidates_list)))
-
-    def input_choices(self, list_equalities, nchoices, course):
-        while True:
-            print("Des égalités sont présentes pour le cours %s." % course)
-            print("Il faut choisir %i candidat(e)s parmis:" % nchoices)
-            for i, c in enumerate(list_equalities):
-                print("%i: %s" % (i + 1, c))
-            choices_left = nchoices
-            choices = []
-            while choices_left:
-                good_ans = False
-                while not good_ans:
-                    ans = user_input.get_user_input("Choix #%i:" %
-                                                    (len(choices) + 1))
-                    try:
-                        choix = int(ans) - 1
-                    except ValueError:
-                        print("SVP, veuillez entrer un nombre entier.")
-                        continue
-                    else:
-                        if choix < 0:
-                            print("SVP, veuillez entrer un nombre > 0.")
-                            continue
-                    good_ans = True
-                    choices.append(list_equalities[choix])
-                    choices_left -= 1
-            print("Vous avez choisis:")
-            for c in choices:
-                print(c)
-            good_ans = False
-            while not good_ans:
-                yes = user_input.get_user_input("Est-ce OK? [Oui/Non]:")
-                yes = yes.lower()
-                if yes not in ("oui", "o", "y", "yes",
-                               "non", "n", "no"):
-                    print("Veuillez entrer oui ou non SVP")
-                    continue
-                else:
-                    good_ans = True
-                    if yes in ("oui", "o", "y", "yes"):
-                        return choices
-                    # if No is entered here, the main loop will restart.
+            self.logger.info("%s : %s" % (course, str(candidates_list)))
 
     def choose_candidates(self, number_of_positions, candidates_list, course):
         if not number_of_positions:
@@ -95,7 +57,12 @@ class Selector:
             for s in same:
                 temp_list.remove(s)
             # n is the number of candidates to choose in liste_eq
-            choices = self.input_choices(eq_list, n, course)
+            choices = user_input.input_choices(eq_list, n, course,
+                                               master=self.master)
+            if len(choices) != n:
+                # something went wrong, raise error.
+                raise ValueError("We were expecting %i choices but"
+                                 " received %i instead..." % (n, len(choices)))
             return choices + temp_list
         return temp_list
 
