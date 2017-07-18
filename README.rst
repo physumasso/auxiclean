@@ -132,9 +132,25 @@ installer le module en mode 'develop'::
   
   $ python setup.py develop
 
-Et pour exécuter les tests, il suffit d'exécuter le script `tests.py`::
+Et pour exécuter les tests, il suffit d'exécuter le script ``tests.py``::
 
   $ python tests.py
+
+
+Fichier Exécutables - Windows
+-----------------------------
+
+Il y a un script ``build.py`` qui permet de créer un fichier exécutable
+windows pour le script python ``run.py`` (pour une exécution sans ligne de commande).
+Il suffit d'exécuter ce script et l'exécutable ``auxiclean.exe`` sera crée sous le
+répertoire ``build``. L'argument ``build`` doit être utilisé lorsque ce script est
+appelé::
+
+  $ python build.py build
+
+Si tout s'est bien déroulé, l'exécutable sera crée et il sera possible de rouler
+le code simplement en cliquant sur cet exécutable. Il sera possible aussi de créer un
+raccourci vers ce fichier exécutable une foix qu'il est crée.
 
 Contributeurs
 -------------
