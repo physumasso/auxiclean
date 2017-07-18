@@ -1,7 +1,7 @@
 import versioneer
 import sys
-import pip
 import os
+from cx_Freeze import setup as setupcx, Executable
 
 
 if sys.platform == "darwin":
@@ -9,13 +9,6 @@ if sys.platform == "darwin":
     raise OSError("Build does not work on MacOS because of cx_freeze.")
 if "build" not in sys.argv:
     raise ValueError("Run this script using the 'build' option.")
-
-# we need cv_Freeze
-try:
-    from cx_Freeze import setup as setupcx, Executable
-except ImportError:
-    pip.main(["install", "cx_Freeze"])
-    from cx_Freeze import setup as setupcx, Executable
 
 base = None
 include_files = []
