@@ -29,5 +29,5 @@ deploy:
   artifact: auxiclean.zip
   draft: true
   on:
-    branch: master
+    branch: test_deploy
     appveyor_repo_tag: true
