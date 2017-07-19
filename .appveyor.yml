@@ -18,3 +18,16 @@ branches:
   only:
   - master
   - develop
+before_deploy:
+  - python build.py bdist_msi
+deploy:
+  release: $(appveyor_build_version)
+  description: "Release description"
+  provider: GitHub
+  auth_token:
+    secure: x2ous7RX857j64h4DSkiEBCSU8kUQYCL31UBrPLUSgosixVS/XDXGA6TWr0DLPm9
+  artifact: auxiclean.zip
+  draft: true
+  on:
+    branch: master
+    appveyor_repo_tag: true
