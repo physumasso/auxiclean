@@ -28,7 +28,9 @@ if sys.platform == "win32":
 
 executables = [Executable("run.py", base=base, targetName="auxiclean.exe")]
 version = versioneer.get_version()
-short = version[:version.find("+")].strip("v")
+short = version.strip("v")
+if "+" in version:
+    short = short[:version.find("+")]
 setupcx(name="auxiclean",
         version=short,
         executables=executables,
