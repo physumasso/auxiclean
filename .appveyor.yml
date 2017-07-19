@@ -1,11 +1,10 @@
-build: false
-
 environment:
   matrix:
     - PYTHON_VERSION: 3.6
       MINICONDA: C:\Miniconda36
 init:
   - "ECHO %PYTHON_VERSION% %MINICONDA%"
+  - "ECHO %APPVEYOR_REPO_TAG_NAME%"
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"   
   - conda update --yes conda
@@ -14,19 +13,26 @@ install:
   - python setup.py develop
 test_script:
   - python tests.py
-branches:
-  only:
-  - master
-  - develop
-before_deploy:
+# build is done in build_script
+build: off
+build_script:
   - python build.py bdist_msi
+artifacts:
+  - path: auxiclean_windows.zip
+    name: auxiclean_windows
+
+# deploy only when making a new release on master branch
+# the windows build will be uploaded into the new release.
 deploy:
-  release: $(appveyor_build_version)
-  description: "Release description"
+  appveyor_repo_tag: true
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  relsease: $(APPVEYOR_REPO_TAG_NAME)
+  description: ""
   provider: GitHub
+  force_update: false
   auth_token:
     secure: x2ous7RX857j64h4DSkiEBCSU8kUQYCL31UBrPLUSgosixVS/XDXGA6TWr0DLPm9
-  artifact: auxiclean.zip
+  artifact: auxiclean_windows
   draft: true
   on:
     branch: master

@@ -28,11 +28,14 @@ if sys.platform == "win32":
 
 executables = [Executable("run.py", base=base, targetName="auxiclean.exe")]
 version = versioneer.get_version()
-short = version[:version.find("+")].strip("v")
+short = version.strip("v")
+if "+" in version:
+    short = version[:version.find("+")].strip("v")
 setupcx(name="auxiclean",
         version=short,
         executables=executables,
-        options={"build_exe": {"include_files": include_files}})
+        options={"build_exe": {"include_files": include_files,
+                               "silent": True}})
 
 # find directory and zip it
 dirs = os.listdir("build")
@@ -44,4 +47,4 @@ for d in dirs:
         break
 if tozip is None:
     raise FileNotFoundError("build directory not found")
-shutil.make_archive("auxiclean", "zip", tozip)
+shutil.make_archive("auxiclean_windows", "zip", tozip)
