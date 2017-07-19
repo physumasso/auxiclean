@@ -14,11 +14,10 @@ def win_pip_install(package, install_list):
 
 # package required
 install_packages = ["openpyxl",  # to manage excel spreadsheets
+                    "cx_freeze",
                     ]
 
-develop_packages = ["nose", "pep8", "coverage", "coveralls",
-                    "cx_freeze",  # to create executable file on windows
-                    ]
+develop_packages = ["nose", "pep8", "coverage"]
 print("Installing auxiclean, the following packages are required:",
       install_packages)
 
