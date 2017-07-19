@@ -1,14 +1,15 @@
 import versioneer
 import sys
 import os
+import shutil
 from cx_Freeze import setup as setupcx, Executable
 
 
 if sys.platform == "darwin":
     # need to find an alternative for mac OS
     raise OSError("Build does not work on MacOS because of cx_freeze.")
-if "build" not in sys.argv:
-    raise ValueError("Run this script using the 'build' option.")
+#if "build" not in sys.argv:
+#    raise ValueError("Run this script using the 'build' option.")
 
 base = None
 include_files = []
@@ -32,3 +33,15 @@ setupcx(name="auxiclean",
         version=short,
         executables=executables,
         options={"build_exe": {"include_files": include_files}})
+
+# find directory and zip it
+dirs = os.listdir("build")
+tozip = None
+for d in dirs:
+    if d.startswith("exe."):
+        # this is it.
+        tozip = os.path.join("build", d)
+        break
+if tozip is None:
+    raise FileNotFoundError("build directory not found")
+shutil.make_archive("auxiclean", "zip", tozip)
