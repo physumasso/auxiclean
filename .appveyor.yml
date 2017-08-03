@@ -18,9 +18,13 @@ test_script:
 # build is done in build_script
 build: off
 build_script:
-  - python build.py bdist_msi
+  # build exe file using pyinstaller from main run script
+  - IF "%PYTHON_VERSION%"=="3.5" (
+      pip install pyinstaller &&
+      pyinstaller --onefile --windowed --name=auxiclean_windows run.py
+    )     
 artifacts:
-  - path: auxiclean_windows.zip
+  - path: dist/auxiclean_windows.exe
     name: auxiclean_windows
 
 # deploy only when making a new release on master branch
@@ -35,7 +39,9 @@ deploy:
   auth_token:
     secure: x2ous7RX857j64h4DSkiEBCSU8kUQYCL31UBrPLUSgosixVS/XDXGA6TWr0DLPm9
   artifact: auxiclean_windows
-  draft: true
   on:
-    branch: master
+    branch: 
+      - master
+      - test_deploy
     appveyor_repo_tag: true
+    PYTHON_VERSION: 3.5
