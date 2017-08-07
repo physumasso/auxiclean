@@ -18,9 +18,26 @@ automatisée pour l'attribution des tâches d'assistanat d'enseignement.
 
 Le code source initial a été écrit par Jérémie Tanguay (`Tanjay94 <https://github.com/Tanjay94>`__ sur GitHub).
 
+Compatibilité
+-------------
 
-Installation
-------------
+Ce projet fonctionne au moins sur Python version 3.5 et 3.6.
+Il fonctionne possiblement pour d'autres versions plus grande ou égale à la version 3 de Python
+mais ne sont pas testées. **Ne fonctionne pas pour Python 2.7 ou inférieur.**
+
+Installation simple (Windows seulement)
+---------------------------------------
+
+Pour les utilisateurs qui ne sont pas familier avec la programmation et la ligne de
+commande, il est possible d'installer et utiliser ce projet sans installer d'interpréteur
+Python. Simplement télécharger le fichier compressé sur la page de la `dernière version
+disponible <https://github.com/physumasso/auxiclean/releases/latest>`__ sur GitHub.
+Il faut télécharger le fichier zip correspondant à la plateforme (pour l'instant uniquement Windows).
+Ensuite, décompresser le fichier compressé et le tour est joué! Pour exécuter le programme, il suffit
+de cliquer sur le fichier exécutable nommé `auxiclean.exe` et le script s'exécutera tout seul.
+
+Installation pour Développement
+-------------------------------
 
 Pour installer le projet, il faut un interpréteur python 3.
 Un bon example est `Miniconda <https://conda.io/miniconda.html>`__
@@ -46,13 +63,13 @@ données de toutes les candidatures et l'autre contenant les détails sur les
 cours à attribuer. Un exemple d'un tel fichier est donné dans le répertoire ``exemples/exemples.xlsx``.
 **N.B.: Pour l'instant, le format de ce fichier d'exemple doit absolument être respecté, c'est-à-dire
 que les titres des colonnes et les noms des feuilles ne doivent pas changer.**
-Une fois ce fichier crée, il suffit d'exécuter le script ``run.py`` qui fera apparaître une
-interface graphique pour sélectionner le fichier et cliquer sur le bouton **Exécuter**::
-
-  $ python run.py
+Une fois ce fichier crée, il suffit d'exécuter le programme (soit en cliquant sur le fichier exécutable
+provenant d'une installation simple ou en exécutant le script ``run.py`` pour une
+installation de developpement). Exécuter le programme fera apparaître une
+interface graphique pour sélectionner le fichier et cliquer sur le bouton **Exécuter**.
 
 **Bien important de fermer le fichier excel avant
-d'exécuter le script run.py, sinon la sélection ne sera pas sauvegardée dans le fichier
+d'exécuter le programme, sinon la sélection ne sera pas sauvegardée dans le fichier
 excel.**
 Alternativement, il est possible d'exécuter la sélection à partir d'un simple script
 python:
@@ -121,7 +138,7 @@ Contribution
 ------------
 
 Pour contribuer au projet, simplement faire un fork du projet sur GitHub
-et soumettre des pull request ou bien contacter un des responsable
+et soumettre des pull requests ou bien contacter un des responsable
 du projet via la `PHYSUM <http://www.aephysum.umontreal.ca/>`__.
 
 Pour les développeurs, il y a des unittests qui sont écrits afin d'aider
@@ -146,7 +163,7 @@ Il suffit d'exécuter ce script et l'exécutable ``auxiclean.exe`` sera crée so
 répertoire ``build``. L'argument ``build`` doit être utilisé lorsque ce script est
 appelé::
 
-  $ python build.py build
+  $ python build.py bdist_msi
 
 Si tout s'est bien déroulé, l'exécutable sera crée et il sera possible de rouler
 le code simplement en cliquant sur cet exécutable. Il sera possible aussi de créer un
