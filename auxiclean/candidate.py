@@ -38,6 +38,12 @@ class Candidate:
         still_dispo = self.disponibilities > len(self.courses_eligible)
         return still_choices and still_dispo
 
+    def remove_course(self, course):
+        """Remove a course from the choices."""
+        if course.code not in self.choices:
+            raise ValueError("%s not in choices." % course)
+        self.choices.remove(course.code)
+
     def __repr__(self):  # pragma: no cover
         return str(self)
 
