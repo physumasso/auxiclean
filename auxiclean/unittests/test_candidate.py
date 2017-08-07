@@ -30,4 +30,4 @@ class TestCandidateNoGPA(TestBase):
         # test that gpa is not considered if it
         # is not given
         user_input.side_effect = ["1", "oui"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
