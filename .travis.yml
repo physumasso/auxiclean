@@ -1,26 +1,47 @@
-matrix:
-  include:
-    - language: generic
-      os: osx
-      before_install:
-        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-        - bash Miniconda3-latest-MacOSX-x86_64.sh -b -p $HOME/miniconda
-        - export PATH="$HOME/miniconda/bin:$PATH"
-        - source $HOME/miniconda/bin/activate
-        - conda update --yes conda
-        - conda create -q --yes -n test-environment python=3.6
-        - source activate test-environment
-    - language: python
-      os: linux
-      python: 3.6
-      after_success:
-        - pip install coveralls
-        - coveralls
-install:
-  - python setup.py develop
-script:
-  - python tests.py
+fast_finish: true
+env:
+  matrix:
+    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
+language: generic  # since we use miniconda everywhere
+os:
+  - linux
+  - osx
+## only launch CI on those branches
 branches:
   only:
   - master
   - develop
+  - test_deploy
+
+# we use python from miniconda in order to be able to create virtual environments easily
+before_install:
+  - echo "$TRAVIS_OS_NAME"
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh; 
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda;
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - source $HOME/miniconda/bin/activate
+  - conda update --yes conda
+  - conda create -q --yes -n test-environment python=$PYTHON_VERSION
+  - source activate test-environment
+# install auxiclean package
+install:
+  - python setup.py develop
+# execute tests
+script:
+  - python tests.py
+after_success:
+  # report coverage in coveralls only for linux build with python 3.6
+  - if ([[ "$PYTHON_VERSION" == "3.6" ]] && 
+        [[ "$TRAVIS_OS_NAME" == "linux" ]]); then
+      pip install coveralls;
+    fi
+  - if ([[ "$PYTHON_VERSION" == "3.6" ]] && 
+        [[ "$TRAVIS_OS_NAME" == "linux" ]]); then
+      coveralls;
+    fi

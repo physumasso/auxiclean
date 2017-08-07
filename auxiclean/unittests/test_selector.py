@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 import os
+import logging
 from unittest.mock import patch
 from auxiclean import Selector
 from collections import OrderedDict
@@ -14,6 +15,8 @@ class TestBase(unittest.TestCase):
     # Cinquieme Choix,Disponibilite,Tp_total,Schoplarite,Nobel,
     # Programme d'etude,Cote Z
     candidates = {}
+    ordered_candidates = None
+    loglevel = logging.DEBUG
 
     def setUp(self):
         self.selector = None
@@ -49,6 +52,11 @@ class TestBase(unittest.TestCase):
                   "discipline", "choix", "cote z")
         for tc, t in zip(title_cells, titles):
             ws[tc].value = t
+        # build ordered candidates dict if necessary
+        if self.ordered_candidates is not None:
+            self.candidates = OrderedDict()
+            for pair in self.ordered_candidates:
+                self.candidates[pair[0]] = pair[1]
         ncandidates = len(self.candidates)
         rows = ws.iter_rows(min_col=1, max_col=8, min_row=2,
                             max_row=ncandidates + 1)
@@ -97,7 +105,7 @@ class TestSelector(TestBase):
     def test_running(self):
         # simple test that checks that both candidates receive
         # their first choice.
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Albert A")
         self.assertEqual(dist["2710"][0].name, "Claude C")
@@ -129,7 +137,7 @@ class TestSortingSelector(TestBase):
                             "discipline": "astro"}}
 
     def test_sort_by_specific_tp_experience(self):
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         # results
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Alice")
@@ -155,7 +163,7 @@ class TestMultiplePosition(TestBase):
                                "discipline": "générale"}}
 
     def test_two_class_for_one_person(self):
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         # results
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Albert A")
@@ -327,7 +335,7 @@ class TestSwitch(TestBase):
                                "discipline": "particules"}}
 
     def test_switch(self):
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         # results
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Claude C")
@@ -469,7 +477,7 @@ class TestGPA(TestBase):
                                "discipline": "particules"}}
 
     def test_gpa(self):
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         # results
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Claude C")
@@ -483,26 +491,26 @@ class TestUserInput(TestBase):
                            "discipline": "générale"}}
     # ordered dict here because for python v < 3.6, dict order is not
     # guaranteed and we want to assign albert A as choice #1
-    candidates = OrderedDict({"Albert A": {"choices": ["1441", ],
-                                           "maximum": 1,
-                                           "scolarity": 2,
-                                           "gpa": 2.0,
-                                           "nobels": 2,
-                                           "courses given": ["1441", "1652", ],
-                                           "discipline": "astrophysique"},
-                              "Bernard B": {"choices": ["1441", ],
-                                            "maximum": 1,
-                                            "scolarity": 2,
-                                            "gpa": 2.0,
-                                            "nobels": 2,
-                                            "courses given": ["1441",
-                                                              "2710", ],
-                                            "discipline": "particules"}})
+    ordered_candidates = [("Albert A", {"choices": ["1441", ],
+                                        "maximum": 1,
+                                        "scolarity": 2,
+                                        "gpa": 2.0,
+                                        "nobels": 2,
+                                        "courses given": ["1441", "1652", ],
+                                        "discipline": "astrophysique"}),
+                          ("Bernard B", {"choices": ["1441", ],
+                                         "maximum": 1,
+                                         "scolarity": 2,
+                                         "gpa": 2.0,
+                                         "nobels": 2,
+                                         "courses given": ["1441",
+                                                           "2710", ],
+                                         "discipline": "particules"})]
 
     def test_user_input_simple(self, user_input_mock):
         # test that user input chooses first candidate over second.
         user_input_mock.side_effect = ["1", "oui"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Albert A")
 
@@ -510,7 +518,7 @@ class TestUserInput(TestBase):
         # test that the code still selects the good candidates
         # if user do not enter a number the first time
         user_input_mock.side_effect = ["not a number", "2", "oui"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Bernard B")
 
@@ -518,7 +526,7 @@ class TestUserInput(TestBase):
         # test that the code still selects the good candidates
         # if user enters a number less than 1
         user_input_mock.side_effect = ["0", "2", "oui"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Bernard B")
 
@@ -527,9 +535,10 @@ class TestUserInput(TestBase):
         # if user enters 'no' at the last step to retry selection
         # (test when user changes its mind)
         user_input_mock.side_effect = ["1", "no", "2", "yes"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
-        self.assertEqual(dist["1441"][0].name, "Bernard B")
+        second_name = self.selector.excel_mgr.candidates[1].name
+        self.assertEqual(dist["1441"][0].name, second_name)
 
     def test_user_input_wrong_retry(self, user_input_mock):
         # test that the code still selects the good candidates
@@ -537,6 +546,6 @@ class TestUserInput(TestBase):
         # last step to retry selection
         # (test when user changes its mind but makes a typo)
         user_input_mock.side_effect = ["1", "not yes or no", "N", "2", "y"]
-        self.selector = Selector(self.data_path)
+        self.selector = Selector(self.data_path, loglevel=self.loglevel)
         dist = self.selector.distribution
         self.assertEqual(dist["1441"][0].name, "Bernard B")

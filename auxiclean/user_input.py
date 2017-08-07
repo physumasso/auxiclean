@@ -86,51 +86,57 @@ class EqualityBreaker:
         return results
 
 
-def input_choices(list_equalities, nchoices, course, master=None):
+def input_choices(list_equalities, nchoices, course, master=None,
+                  loglevel=logging.INFO):
     if master is not None:
         newWindow = tk.Toplevel(master)
         equalitybreaker = EqualityBreaker(list_equalities, nchoices, course,
                                           master=newWindow)
         master.wait_window(newWindow)
         return equalitybreaker.choices
-    return command_line_input(list_equalities, nchoices, course)
+    return command_line_input(list_equalities, nchoices, course, loglevel)
 
 
-def command_line_input(list_equalities, nchoices, course):
+def command_line_input(list_equalities, nchoices, course, loglevel):
+    logging.basicConfig()
+    logger = logging.getLogger("CMD_input")
+    logger.setLevel(loglevel)
     while True:
-        logging.info("Des égalités sont présentes pour le cours %s." % course)
-        logging.info("Il faut choisir %i candidat(e)s parmis:" % nchoices)
+        logger.info("Des égalités sont présentes pour le cours %s." % course)
+        logger.info("Il faut choisir %i candidat(e)s parmis:" % nchoices)
         for i, c in enumerate(list_equalities):
-            logging.info("%i: %s" % (i + 1, c))
+            logger.info("%i: %s" % (i + 1, c))
         choices_left = nchoices
         choices = []
         while choices_left:
             good_ans = False
             while not good_ans:
                 ans = get_user_input("Choix #%i:" %
-                                     (len(choices) + 1))
+                                     (len(choices) + 1), loglevel)
+                logger.debug("user input: %s" % ans)
                 try:
                     choix = int(ans) - 1
                 except ValueError:
-                    logging.warn("SVP, veuillez entrer un nombre entier.")
+                    logger.warn("SVP, veuillez entrer un nombre entier.")
                     continue
                 else:
                     if choix < 0:
-                        logging.warn("SVP, veuillez entrer un nombre > 0.")
+                        logger.warn("SVP, veuillez entrer un nombre > 0.")
                         continue
                 good_ans = True
                 choices.append(list_equalities[choix])
                 choices_left -= 1
-        logging.info("Vous avez choisis:")
+        logger.info("Vous avez choisis:")
         for c in choices:
-            logging.info(c)
+            logger.info(c)
         good_ans = False
         while not good_ans:
-            yes = get_user_input("Est-ce OK? [Oui/Non]:")
+            yes = get_user_input("Est-ce OK? [Oui/Non]:", loglevel)
+            logger.debug("user input: %s" % yes)
             yes = yes.lower()
             if yes not in ("oui", "o", "y", "yes",
                            "non", "n", "no"):
-                logging.warn("Veuillez entrer oui ou non SVP")
+                logger.warn("Veuillez entrer oui ou non SVP")
                 continue
             else:
                 good_ans = True
