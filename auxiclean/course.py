@@ -1,3 +1,7 @@
+import copy
+from .candidate import CourseCandidate
+
+
 class Course:
     def __init__(self, name, code, positions, discipline):
         self.code = code
@@ -8,5 +12,17 @@ class Course:
         self.discipline = discipline if discipline is not None else "générale"
         self.candidates = []
 
+    def add_candidate(self, candidate):
+        # make a deep copy of the candidate to not lose infos
+        cp = copy.deepcopy(candidate)
+        # use course candidate for comparision between candidates for the
+        # specific course
+        storedcandidate = CourseCandidate(cp, self)
+        self.candidates.append(storedcandidate)
+
     def __repr__(self):  # pragma: no cover
-        return self.name
+        return "%s - %s" % (self.code, self.name)
+
+    def __str__(self):
+        s = ("%s - %s: max=%i" % (self.code, self.name, self.positions))
+        return s
