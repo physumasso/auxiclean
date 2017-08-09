@@ -2,9 +2,11 @@ from .selector import Selector
 from .handler import TextHandler
 from tkinter import filedialog, scrolledtext
 from auxiclean import MAINLOGGER
+import auxiclean
 import tkinter as tk
 import os
 import logging
+import webbrowser
 
 
 class Browser:
@@ -12,7 +14,8 @@ class Browser:
         self.master = master
         self.frame = tk.Frame(self.master)
         self.frame.grid(sticky=tk.E + tk.W)
-        self.master.title("Auxiclean - GUI")
+        self.master.title("Auxiclean - GUI - version: %s" %
+                          auxiclean.__version__)
         # browser logger
         self.logger = logging.getLogger("auxiclean.browser")
         self.createMainWindow()
@@ -56,6 +59,16 @@ class Browser:
 
         # Logging configuration
         MAINLOGGER.addHandler(self.text_handler)
+        # bug report link (button)
+        self.bug_report = tk.Label(self.frame,
+                                   text="Il y a un bug? Écrivez le ici!",
+                                   fg="blue",
+                                   cursor="hand2")
+        self.bug_report.grid(column=0)
+        self.bug_report.bind("<Button-1>", self.bug_callback)
+
+    def bug_callback(self, event):
+        webbrowser.open_new(r"https://github.com/physumasso/auxiclean/issues")
 
     def run_selector(self):
         path = self.pathBox.get()
