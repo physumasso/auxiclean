@@ -25,21 +25,22 @@ Ce projet fonctionne au moins sur Python version 3.5 et 3.6.
 Il fonctionne possiblement pour d'autres versions plus grande ou égale à la version 3 de Python
 mais ne sont pas testées. **Ne fonctionne pas pour Python 2.7 ou inférieur.**
 
-Installation simple (Windows seulement)
----------------------------------------
+Installation simple
+-------------------
 
 Pour les utilisateurs qui ne sont pas familier avec la programmation et la ligne de
 commande, il est possible d'installer et utiliser ce projet sans installer d'interpréteur
 Python. Simplement télécharger le fichier compressé sur la page de la `dernière version
 disponible <https://github.com/physumasso/auxiclean/releases/latest>`__ sur GitHub.
-Il faut télécharger le fichier zip correspondant à la plateforme (pour l'instant uniquement Windows).
-Ensuite, décompresser le fichier compressé et le tour est joué! Pour exécuter le programme, il suffit
-de cliquer sur le fichier exécutable nommé `auxiclean.exe` et le script s'exécutera tout seul.
+Il faut télécharger le fichier correspondant à la plateforme souhaitée. Pour MacOS, le fichier à télécharger
+est un fichier zip qu'il faut décompresser avant de pouvoir exécuter le .app.
+Pour exécuter le programme, il suffit
+de cliquer sur le fichier exécutable téléchargé et le tour est joué!
 
 Installation pour Développement
 -------------------------------
 
-Pour installer le projet, il faut un interpréteur python 3.
+Pour installer le projet de sorte à avoir accès à l'API, il faut un interpréteur python 3.
 Un bon example est `Miniconda <https://conda.io/miniconda.html>`__
 produit par Continuum Analytics.
 
@@ -153,21 +154,28 @@ Et pour exécuter les tests, il suffit d'exécuter le script ``tests.py``::
 
   $ python tests.py
 
+Pour recréer les fichiers exécutables comme sur la page des `releases <https://github.com/physumasso/auxiclean/releases/latest>`__ sur GitHub,
+il faut installer **pyinstaller**::
 
-Fichier Exécutables - Windows
------------------------------
+  $ pip install pyinstaller
 
-Il y a un script ``build.py`` qui permet de créer un fichier exécutable
-windows pour le script python ``run.py`` (pour une exécution sans ligne de commande).
-Il suffit d'exécuter ce script et l'exécutable ``auxiclean.exe`` sera crée sous le
-répertoire ``build``. L'argument ``build`` doit être utilisé lorsque ce script est
-appelé::
+et exécuter la commande::
+ 
+  $ pyinstaller --onefile --windowed --clean --name=auxiclean_executable run.py
 
-  $ python build.py bdist_msi
+Cette commande compilera le fichier `run.py` sous une forme exécutable dépendamment de
+la plateforme utilisée. Attention, pyinstaller ne fonctionne pas en python 3.6. Il faut donc exécuter
+cette commande soit sous une version de python 3.5 ou inférieure ou soit dans un environnement
+virtuel.
 
-Si tout s'est bien déroulé, l'exécutable sera crée et il sera possible de rouler
-le code simplement en cliquant sur cet exécutable. Il sera possible aussi de créer un
-raccourci vers ce fichier exécutable une foix qu'il est crée.
+POUR LES ADMINS: lorsqu'un PR est fait, les tests sont roulés à la fois sur Windows (Appveyor) que
+sur MacOS et linux (travis). Le code coverage est rapporté avec coveralls, ceci permet de toujours s'assurer
+que le code fonctionne après chaque modification. Il est donc important d'écrire des tests en conséquence si
+l'API change. De plus, les fichiers exécutables pour chaque release sont compilés et uploadés automatiquement
+sur GitHub. Ainsi, dès qu'une nouvelle release est crée, Appveyor s'occupera de créer le fichier exécutable
+pour Windows et travis pour MacOS et Linux, pas besoin de les créer manuellement (voir les fichiers
+`.travis.yml <https://github.com/physumasso/auxiclean/blob/master/.travis.yml>`__ et
+`.appveyor.yml <https://github.com/physumasso/auxiclean/blob/master/.appveyor.yml>`__ )
 
 Contributeurs
 -------------
