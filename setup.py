@@ -14,8 +14,8 @@ def win_pip_install(package, install_list):
 
 # package required
 install_packages = ["openpyxl",  # to manage excel spreadsheets
-                    "cx_freeze",
                     ]
+
 
 develop_packages = ["nose", "pep8", "coverage"]
 print("Installing auxiclean, the following packages are required:",
@@ -28,7 +28,7 @@ if "develop" in sys.argv:
 
 # if on windows, there is a bug when installing some packages with setuptools.
 # installing them with pip before setup fixes this.
-problematics = ("cx_freeze", "coverage")
+problematics = ("coverage", )
 if sys.platform == "win32":
     for problematic in problematics:
         win_pip_install(problematic, install_packages)
