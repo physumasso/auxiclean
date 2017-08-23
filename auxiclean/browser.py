@@ -6,6 +6,7 @@ import auxiclean
 import tkinter as tk
 import os
 import logging
+import traceback
 import webbrowser
 
 
@@ -45,6 +46,14 @@ class Browser:
         self.quitButton = tk.Button(self.frame, text="Quitter",
                                     command=self.frame.quit)
         self.quitButton.grid()
+        # create DEBUG button (for verbose option in GUI)
+        self.debugCheckButton = tk.Variable()
+        _actual_button = tk.Checkbutton(self.frame,
+                                        text="Full traceback (DEBUG)",
+                                        anchor="e",
+                                        variable=self.debugCheckButton)
+        _actual_button.deselect()
+        _actual_button.grid(row=2, column=2)
 
         # create log box
         # adapted from this SO post:
@@ -76,7 +85,12 @@ class Browser:
         try:
             Selector(path, master=self.master)
         except Exception as e:
-            self.logger.error("%s" % e)
+            if not int(self.debugCheckButton.get()):
+                self.logger.error("%s" % e)
+            else:
+                # print full traceback
+                tb = traceback.format_exc()
+                self.logger.error(tb)
         else:
             self.logger.info("Succès!")
 
