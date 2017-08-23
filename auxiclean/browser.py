@@ -2,6 +2,7 @@ from .selector import Selector
 from .handler import TextHandler
 from tkinter import filedialog, scrolledtext
 from auxiclean import MAINLOGGER
+from timeit import default_timer as timer
 import auxiclean
 import tkinter as tk
 import os
@@ -83,6 +84,10 @@ class Browser:
         path = self.pathBox.get()
         path = os.path.abspath(path)
         try:
+            self.logger.info("Exécution ... ceci peut prendre"
+                             " quelques minutes ...")
+            # time process
+            start = timer()
             Selector(path, master=self.master)
         except Exception as e:
             if not int(self.debugCheckButton.get()):
@@ -91,8 +96,13 @@ class Browser:
                 # print full traceback
                 tb = traceback.format_exc()
                 self.logger.error(tb)
+            self.logger.info("STOP - ERREUR")
         else:
             self.logger.info("Succès!")
+        finally:
+            end = timer()
+            self.logger.info("Temps d'exécution = %s secondes" %
+                             str(end - start))
 
     def select_file(self):
         data_file = filedialog.askopenfile(parent=self.master,
