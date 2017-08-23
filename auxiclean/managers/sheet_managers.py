@@ -8,6 +8,14 @@ class BaseSheetManager:
     def __init__(self, workbook):
         self.wb = workbook
 
+    def _find_max_columns(self, titles_row):
+        for i, cell in enumerate(titles_row):
+            if cell.value is None:
+                return i
+            elif cell.value.lower() == "none":
+                return i
+        return len(titles_row)
+    
     def get_sheet(self, workbook, sheetname):
         for sheet in workbook.worksheets:
             if sheet.title.lower() == sheetname.lower():
@@ -30,7 +38,10 @@ class CoursesSheetManager(BaseSheetManager):
         # get the worksheet
         ws = self.get_sheet(wb, "Affichage")
         titles = ws[1]  # assume columns are labeled in first row
+        max_column = self._find_max_columns(titles)
+        titles = titles[:max_column]
         courses_data = ws[2:ws.max_row]  # rest are actual courses data
+        courses_data = [c[:max_column] for c in courses_data]
         courses = []
         if ws.max_row == 2:
             courses_data = (courses_data, )  # bring into a tuple if needed
@@ -58,15 +69,19 @@ class CandidatesSheetManager(BaseSheetManager):
     def load_candidates_from_wb(self, wb):
         ws = self.get_sheet(wb, "Candidatures")
         titles = ws[1]
+        max_column = self._find_max_columns(titles)
+        titles = titles[:max_column]
         candidates_data = ws[2:ws.max_row]
+        candidates_data = [c[:max_column] for c in candidates_data]
         if ws.max_row == 2:
             candidates_data = (candidates_data, )  # bring into a tuple
         candidates = []
-        for candidate in candidates_data:
+        for i, candidate in enumerate(candidates_data):
             d = {label.value.lower(): cell.value
                  for label, cell in zip(titles, candidate)}
             d["choix"] = self._get_list_from_str(d["choix"])
             d["cours donnés"] = self._get_list_from_str(d["cours donnés"])
+            self._checkup_candidate_data(d, i)
             candidates.append(d)
         return [Candidate(x["nom"],
                           x["maximum"],
@@ -75,6 +90,19 @@ class CandidatesSheetManager(BaseSheetManager):
                           x["nobels"],
                           x["discipline"],
                           x["cote z"], *x["choix"]) for x in candidates]
+
+    def _checkup_candidate_data(self, data, i):
+        # i == candidate index row
+        if data["nom"] is None:
+            raise ExcelError("Candidature ligne %i n'a pas de nom." % i)
+        if data["maximum"] is None:
+            raise ExcelError("Candidature %s n'a pas de maximum." %
+                             data["nom"])
+        if data["cycle"] is None:
+            raise ExcelError("Candidature %s n'a pas de cycle d'étude." %
+                             data["nom"])
+        if data["choix"] is None:
+            raise ExcelError("Candidature %s n'a pas de choix!" % data["nom"])
 
     def _get_list_from_str(self, string):
         # string format: 1441-90, 3131, 2810, ...
@@ -148,3 +176,7 @@ class DistributionSheetManager(BaseSheetManager):
             warnings.warn("A Distribution sheet already exists in destination."
                           " A new one will be created: %s." % ws.title)
         return ws
+
+
+class ExcelError(Exception):
+    pass
