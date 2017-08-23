@@ -12,14 +12,15 @@ class Candidate:
     def __init__(self, name,
                  disponibilities, courses_given,
                  scolarity, nobels, discipline, gpa, *choices):
-        self.name = name
-        self.choices = list(choices)
+        self.name = name.strip()
+        self.choices = [c.strip() for c in list(choices)]
         self.disponibilities = int(disponibilities)
-        self.courses_given = courses_given
+        self.courses_given = [c.strip() for c in courses_given]
         self.courses_eligible = []  # list of course the candidate is eligible
         self.scolarity = int(scolarity)
         self.nobels = int(nobels) if nobels is not None else 0
-        self.discipline = discipline if discipline is not None else "générale"
+        self.discipline = (discipline.lower().strip() if discipline is not None
+                           else "générale")
         self.gpa = float(gpa) if gpa is not None else None
 
     @property

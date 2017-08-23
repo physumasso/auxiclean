@@ -7,9 +7,10 @@ class Course:
         self.code = code
         if self.code is None:
             raise ValueError("Course has no code!")
-        self.name = name if name is not None else self.code
+        self.name = name.strip() if name is not None else self.code
         self.positions = int(positions)
-        self.discipline = discipline if discipline is not None else "générale"
+        self.discipline = (discipline.lower().strip() if discipline is not None
+                           else "générale")
         self.candidates = []
 
     def add_candidate(self, candidate):
