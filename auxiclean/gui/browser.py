@@ -1,5 +1,5 @@
-from .selector import Selector
-from .handler import TextHandler
+from ..selector import Selector
+from ..handler import TextHandler
 from tkinter import filedialog, scrolledtext
 from auxiclean import MAINLOGGER
 from timeit import default_timer as timer
