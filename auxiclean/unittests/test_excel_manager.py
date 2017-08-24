@@ -1,6 +1,7 @@
 from .test_selector import TestBase
 from openpyxl import load_workbook
 from auxiclean import Selector
+from auxiclean.exceptions import ExcelError
 from collections import OrderedDict
 import warnings
 
@@ -108,5 +109,5 @@ class TestExcelCandidateChoiceError(TestBase):
                                "gpa": 3.0}}
 
     def test_raise_choice_error(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ExcelError):
             self.selector = Selector(self.data_path)
