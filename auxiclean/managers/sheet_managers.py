@@ -1,5 +1,6 @@
 from ..candidate import Candidate
 from ..course import Course
+from ..exceptions import ExcelError
 from openpyxl.styles import Alignment, colors, PatternFill, Font
 import warnings
 
@@ -15,12 +16,12 @@ class BaseSheetManager:
             elif cell.value.lower() == "none":
                 return i
         return len(titles_row)
-    
+
     def get_sheet(self, workbook, sheetname):
         for sheet in workbook.worksheets:
             if sheet.title.lower() == sheetname.lower():
                 return sheet
-        raise ValueError("%s sheet is not found inside file." % sheetname)
+        raise ExcelError("%s sheet is not found inside file." % sheetname)
 
 
 class CoursesSheetManager(BaseSheetManager):
@@ -41,10 +42,10 @@ class CoursesSheetManager(BaseSheetManager):
         max_column = self._find_max_columns(titles)
         titles = titles[:max_column]
         courses_data = ws[2:ws.max_row]  # rest are actual courses data
-        courses_data = [c[:max_column] for c in courses_data]
-        courses = []
         if ws.max_row == 2:
             courses_data = (courses_data, )  # bring into a tuple if needed
+        courses_data = [c[:max_column] for c in courses_data]
+        courses = []
         for course in courses_data:
             d = {label.value.lower(): cell.value
                  for label, cell in zip(titles, course)}
@@ -72,9 +73,9 @@ class CandidatesSheetManager(BaseSheetManager):
         max_column = self._find_max_columns(titles)
         titles = titles[:max_column]
         candidates_data = ws[2:ws.max_row]
-        candidates_data = [c[:max_column] for c in candidates_data]
         if ws.max_row == 2:
             candidates_data = (candidates_data, )  # bring into a tuple
+        candidates_data = [c[:max_column] for c in candidates_data]
         candidates = []
         for i, candidate in enumerate(candidates_data):
             d = {label.value.lower(): cell.value
@@ -167,7 +168,7 @@ class DistributionSheetManager(BaseSheetManager):
         # it one already exists, create one but warn user.
         try:
             ws = super().get_sheet(workbook, "Distribution")
-        except ValueError:
+        except ExcelError:
             # sheet does not exist
             ws = workbook.create_sheet("Distribution")
         else:
@@ -176,7 +177,3 @@ class DistributionSheetManager(BaseSheetManager):
             warnings.warn("A Distribution sheet already exists in destination."
                           " A new one will be created: %s." % ws.title)
         return ws
-
-
-class ExcelError(Exception):
-    pass
