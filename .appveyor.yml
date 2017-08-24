@@ -14,7 +14,7 @@ install:
   - activate test-environment
   - python setup.py develop
 test_script:
-  - python tests.py
+  - pytest
 # build is done in build_script
 build: off
 build_script:

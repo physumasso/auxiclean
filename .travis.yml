@@ -43,7 +43,7 @@ install:
   - python setup.py develop
 # execute tests
 script:
-  - python tests.py
+  - pytest
 after_success:
   # report coverage in coveralls only for linux build with python 3.6
   - if ([[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && 
