@@ -17,7 +17,7 @@ install_packages = ["openpyxl",  # to manage excel spreadsheets
                     ]
 
 
-develop_packages = ["nose", "pep8", "coverage"]
+develop_packages = ["pytest-cov", "pep8", "coverage"]
 print("Installing auxiclean, the following packages are required:",
       install_packages)
 

@@ -150,7 +150,7 @@ class TestMultiplePosition(TestBase):
                            "discipline": "générale"},
                "Astro": {"code": "2710",
                          "disponibilities": 1,
-                         "discipline": "astro"}}
+                         "discipline": "astrophysique"}}
     # one candidate applying for two different course.
     # if the candidate is the best suited, he gets both choice
     # assuming he has two disponibilities
@@ -332,7 +332,7 @@ class TestSwitch(TestBase):
                                "nobels": 0,
                                "courses given": ["2710", "2710",
                                                  "1441", "1441"],
-                               "discipline": "particules"}}
+                               "discipline": "générale"}}
 
     def test_switch(self):
         self.selector = Selector(self.data_path, loglevel=self.loglevel)
@@ -354,14 +354,14 @@ class TestCourseGiven(TestBase):
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", ],
-                               "discipline": "astrophysique"},
+                               "discipline": "générale"},
                   "Claude C": {"choices": ["1441", ],
                                "maximum": 1,
                                "scolarity": 2,
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "2710", ],
-                               "discipline": "particules"}}
+                               "discipline": "générale"}}
 
     def test_course_given(self):
         self.selector = Selector(self.data_path)
@@ -370,7 +370,7 @@ class TestCourseGiven(TestBase):
         self.assertEqual(dist["1441"][0].name, "Claude C")
 
 
-class TestScholarity(TestBase):
+class TestScolarity(TestBase):
     # one course for two person
     courses = {"Electro": {"code": "1441",
                            "disponibilities": 1,
@@ -382,16 +382,16 @@ class TestScholarity(TestBase):
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "1652", ],
-                               "discipline": "astrophysique"},
+                               "discipline": "générale"},
                   "Claude C": {"choices": ["1441", ],
                                "maximum": 1,
                                "scolarity": 3,
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "2710", ],
-                               "discipline": "particules"}}
+                               "discipline": "générale"}}
 
-    def test_scholarity(self):
+    def test_scolarity(self):
         self.selector = Selector(self.data_path)
         # results
         dist = self.selector.distribution
@@ -410,14 +410,14 @@ class TestNobel(TestBase):
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "1652", ],
-                               "discipline": "astrophysique"},
+                               "discipline": "générale"},
                   "Claude C": {"choices": ["1441", ],
                                "maximum": 1,
                                "scolarity": 2,
                                "gpa": 2.0,
                                "nobels": 3,
                                "courses given": ["1441", "2710", ],
-                               "discipline": "particules"}}
+                               "discipline": "générale"}}
 
     def test_nobel(self):
         self.selector = Selector(self.data_path)
@@ -426,7 +426,7 @@ class TestNobel(TestBase):
         self.assertEqual(dist["1441"][0].name, "Claude C")
 
 
-class TestProgram(TestBase):
+class TestDiscipline(TestBase):
     # one course for two person
     courses = {"Astro": {"code": "2710",
                          "disponibilities": 1,
@@ -438,7 +438,7 @@ class TestProgram(TestBase):
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "1652", ],
-                               "discipline": "particules"},
+                               "discipline": "générale"},
                   "Claude C": {"choices": ["2710", ],
                                "maximum": 1,
                                "scolarity": 2,
@@ -467,14 +467,14 @@ class TestGPA(TestBase):
                                "gpa": 2.0,
                                "nobels": 2,
                                "courses given": ["1441", "1652", ],
-                               "discipline": "astrophysique"},
+                               "discipline": "générale"},
                   "Claude C": {"choices": ["1441", ],
                                "maximum": 1,
                                "scolarity": 2,
                                "gpa": 3.0,
                                "nobels": 2,
                                "courses given": ["1441", "2710", ],
-                               "discipline": "particules"}}
+                               "discipline": "générale"}}
 
     def test_gpa(self):
         self.selector = Selector(self.data_path, loglevel=self.loglevel)
@@ -497,7 +497,7 @@ class TestUserInput(TestBase):
                                         "gpa": 2.0,
                                         "nobels": 2,
                                         "courses given": ["1441", "1652", ],
-                                        "discipline": "astrophysique"}),
+                                        "discipline": "générale"}),
                           ("Bernard B", {"choices": ["1441", ],
                                          "maximum": 1,
                                          "scolarity": 2,
@@ -505,7 +505,7 @@ class TestUserInput(TestBase):
                                          "nobels": 2,
                                          "courses given": ["1441",
                                                            "2710", ],
-                                         "discipline": "particules"})]
+                                         "discipline": "générale"})]
 
     def test_user_input_simple(self, user_input_mock):
         # test that user input chooses first candidate over second.
