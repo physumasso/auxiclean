@@ -1,4 +1,4 @@
-from auxiclean.browser import Browser
+from auxiclean.gui.browser import Browser
 import tkinter as tk
 
 
