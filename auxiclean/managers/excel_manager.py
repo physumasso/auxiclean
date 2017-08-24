@@ -1,10 +1,15 @@
 from openpyxl import load_workbook
 from .sheet_managers import (CoursesSheetManager, CandidatesSheetManager,
-                             DistributionSheetManager, ExcelError)
+                             DistributionSheetManager)
+from ..exceptions import ExcelError
+import logging
 
 
 class ExcelFileManager:
-    def __init__(self, path):
+    def __init__(self, path, loglevel=logging.INFO):
+        self.logger = logging.getLogger("auxiclean.managers.excelfilemanager")
+        self.logger.setLevel(loglevel)
+
         self.path = path
         self.wb = load_workbook(path)
         self._courses = CoursesSheetManager(self.wb)
@@ -63,18 +68,19 @@ class ExcelFileManager:
             if d is None or d.lower() == "générale":
                 continue
             if d not in all_courses_disciplines:
-                raise ExcelError("La discipline '%s' de %s n'est pas dans"
-                                 " la liste de toutes les"
-                                 " disciplines des cours." %
-                                 (d, candidate.name))
+                self.logger.warning("La discipline '%s' de %s n'est pas dans"
+                                    " la liste de toutes les"
+                                    " disciplines des cours." %
+                                    (d, candidate.name))
         for course in self.courses:
             d = course.discipline.lower()
             if d is None or d.lower() == "générale":
                 continue
             if d not in all_candidates_disciplines:
-                raise ExcelError("La discipline '%s' du cours %s n'es pas dans"
-                                 " la liste de toutes les disciplines des"
-                                 " candidatures." % (d, course.code))
+                self.logger.warning("La discipline '%s' du cours %s n'est"
+                                    " pas dans"
+                                    " la liste de toutes les disciplines des"
+                                    " candidatures." % (d, course.code))
 
     def _choice_in_courses(self, choice):
         for course in self.courses:
