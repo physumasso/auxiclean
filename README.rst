@@ -150,9 +150,10 @@ installer le module en mode 'develop'::
   
   $ python setup.py develop
 
-Et pour exécuter les tests, il suffit d'exécuter le script ``tests.py``::
+Et pour exécuter les tests, il suffit de lancer `pytest` (requiert d'avoir installé `pytest-cov` ce qui est
+fait automatiquement via le script d'installation)::
 
-  $ python tests.py
+  $ pytest
 
 Pour recréer les fichiers exécutables comme sur la page des `releases <https://github.com/physumasso/auxiclean/releases/latest>`__ sur GitHub,
 il faut installer **pyinstaller**::
