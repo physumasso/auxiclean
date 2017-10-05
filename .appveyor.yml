@@ -19,7 +19,7 @@ test_script:
 build: off
 build_script:
   # build exe file using pyinstaller from main run script
-  - IF "%PYTHON_VERSION%"=="3.5" (
+  - IF "%PYTHON_VERSION%"=="3.6" (
       pip install pyinstaller &&
       pyinstaller --onefile --windowed --name=auxiclean_windows run.py
     )     
@@ -44,4 +44,4 @@ deploy:
       - master
       - test_deploy
     appveyor_repo_tag: true
-    PYTHON_VERSION: 3.5
+    PYTHON_VERSION: 3.6
