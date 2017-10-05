@@ -1,4 +1,4 @@
-fast_finish: true
+ourceast_finish: true
 language: python
 # use matrix implementation for osx build
 # this is needed to use the language:generic
@@ -36,6 +36,10 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - source $HOME/miniconda/bin/activate
   - conda update --yes conda
+  # for now, there is a bug with conda v4.3.27 on linux for pyinstaller, use the version before
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+      conda install --yes conda==4.3.25;
+    fi
   - conda create -q --yes -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
 # install auxiclean package
@@ -56,13 +60,13 @@ after_success:
     fi
 
 before_deploy:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then pip install pyinstaller; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then pip install pyinstaller; fi
   # for macos we compress the .app bundle to be able to upload it on github
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd dist; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r auxiclean_osx.zip auxiclean_osx.app; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd ..; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_linux run.py; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd dist; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r auxiclean_osx.zip auxiclean_osx.app; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd ..; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_linux run.py; fi
 
 deploy:
   - provider: releases
@@ -72,10 +76,10 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      python: 3.5
+      python: 3.6
 
     file: $DEPLOY_FILE
     skip_cleanup: true
     on:
       tags: true
-      python: 3.5
+      python: 3.6
