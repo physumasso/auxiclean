@@ -1,10 +1,30 @@
-from .managers import ExcelFileManager
+from .managers import ExcelFileManager, DEFAULT_PARAMETERS
 import auxiclean.user_input as user_input
 import logging
 
 
+DEFAULT_PRIORITIES = DEFAULT_PARAMETERS["priorities"]
+
+
 class Selector:
-    def __init__(self, path, master=None, loglevel=logging.INFO):
+    def __init__(self, path, master=None,
+                 priorities=DEFAULT_PRIORITIES,
+                 loglevel=logging.INFO):
+        """Class that makes a selection of candidates for some courses
+        given a list of priorities. Candidates and courses list are read
+        from a file.
+
+        Parameters
+        ----------
+        path : str
+               The excel file.
+        master : If in a GUI, this would be the master window for this object.
+        priorities : list, tuple
+                     The list of priorities to compare two candidates (gives
+                     the comparison order).
+        loglevel : int, optional
+                   Gives the level of the logging.
+        """
         self.logger = logging.getLogger("auxiclean.selector")
         self.logger.setLevel(loglevel)
         self.master = master  # if in a GUI
@@ -16,8 +36,10 @@ class Selector:
         self.print_courses(self.courses)
         self.print_candidates(self.candidates)
         # make distribution
+        self._priorities = priorities
         self.distribution = self.make_distribution(self.courses,
-                                                   self.candidates)
+                                                   self.candidates,
+                                                   self._priorities)
         # print distribution
         self.print_distribution(self.distribution)
         # write distribution into same excel file
@@ -86,6 +108,10 @@ class Selector:
         return [c for c in full_list if c.name not in end_names]
 
     def sort(self, number_of_positions, candidates_list, course_name):
+        """Sort a list of eligible candidates for a specific course in order
+        of worst candidate to best candidate according to a given list of
+        priorities.
+        """
         # sort the list of candidates in ordre of worst to best
         self.logger.debug("Sorting candidates for course %s: %s" %
                           (course_name, str(candidates_list)))
@@ -99,21 +125,29 @@ class Selector:
                                              course_name)
         return candidates_chosen, dismissed
 
-    def make_distribution(self, courses_list, candidates_list):
+    def make_distribution(self, courses_list, candidates_list, priorities):
+        """Makes the distribution from a list of candidates and a list
+        of courses. The distribution is based on the priorities list which
+        gives the order of parameters to compare 2 candidates.
+        """
         self.logger.debug("\n#####  MAKING DISTRIBUTION  #####")
         change = True
         i = 0
         while change:
+            # loop until no changes is done to the distribution.
             self.logger.debug("--Iter %i: %s" %
                               (i, str({c.code: c.candidates
                                        for c in courses_list})))
             change = False
             for course in courses_list:
+                # loop over all courses.
                 self.logger.debug("Treating course %s" % str(course))
                 if not course.positions:
+                    # empty course, go to the next one
                     self.logger.debug("Course has no positions left.")
                     continue
                 for candidate in candidates_list:
+                    # loop over all candidates
                     c = candidate
                     self.logger.debug("Treating candidate %s" % c)
                     if not c.still_eligible or c.next_choice != course.code:
@@ -121,8 +155,10 @@ class Selector:
                         self.logger.debug("Candidate not eligible"
                                           " for this course.")
                         continue
+                    # this candidate is elgible for the course.
+                    # there will be a change in the distribution.
                     change = True
-                    course.add_candidate(c)
+                    course.add_candidate(c, priorities)
                     self.logger.debug("Candidate eligible.")
 
                 # if number of candidates is greater than number of positions,
@@ -140,6 +176,7 @@ class Selector:
                 self.update_eligible_courses(course, candidates_list)
             if not change:
                 break
+        # left main loop => distribution stable => write distribution
         distribution = {}
         for course in courses_list:
             distribution[course.code] = course.candidates
