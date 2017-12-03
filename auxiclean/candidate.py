@@ -1,13 +1,3 @@
-# priority attributes in order of most important to least important
-# DO NOT CHANGE THIS LIST AS IT WAS DECIDED BY A COMITEE
-PRIORITIES = ("course_given",
-              "total_courses_given",
-              "scolarity",
-              "nobels",
-              "same_discipline",
-              "gpa")
-
-
 class Candidate:
     def __init__(self, name,
                  disponibilities, courses_given,
@@ -58,7 +48,17 @@ class Candidate:
 
 
 class CourseCandidate:
-    def __init__(self, candidate, course):
+    def __init__(self, candidate, course, priorities):
+        """Class that is used to compare multiple candidates for a course.
+
+        Parameters
+        ----------
+        candidate : the candidate object
+        course : course object
+        priorities : list, tuple
+                     A list of strings which is the priority order to compare
+                     two candidates.
+        """
         self.name = candidate.name
         self.course_given = self._get_course_given(candidate.courses_given,
                                                    course.code)
@@ -68,6 +68,7 @@ class CourseCandidate:
         self.same_discipline = self._discipline_matches(candidate.discipline,
                                                         course.discipline)
         self.gpa = candidate.gpa
+        self._priorities = priorities
 
     def _discipline_matches(self, candidate_discipline, course_discipline):
         if course_discipline.lower() in ("générale", "generale", "general"):
@@ -84,7 +85,7 @@ class CourseCandidate:
         return count
 
     def __lt__(self, candidate2):
-        for attribute in PRIORITIES:
+        for attribute in self._priorities:
             attr1 = getattr(self, attribute)
             attr2 = getattr(candidate2, attribute)
             if attr1 is None or attr2 is None:
@@ -101,7 +102,7 @@ class CourseCandidate:
         return False
 
     def __eq__(self, candidate2):
-        for attribute in PRIORITIES:
+        for attribute in self._priorities:
             attr1 = getattr(self, attribute)
             attr2 = getattr(candidate2, attribute)
             if attr1 != attr2:

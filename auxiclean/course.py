@@ -13,12 +13,14 @@ class Course:
                            else "générale")
         self.candidates = []
 
-    def add_candidate(self, candidate):
+    def add_candidate(self, candidate, priorities):
+        """Add candidate to course as a CourseCandidate object.
+        """
         # make a deep copy of the candidate to not lose infos
         cp = copy.deepcopy(candidate)
         # use course candidate for comparision between candidates for the
         # specific course
-        storedcandidate = CourseCandidate(cp, self)
+        storedcandidate = CourseCandidate(cp, self, priorities)
         self.candidates.append(storedcandidate)
 
     def __repr__(self):  # pragma: no cover
