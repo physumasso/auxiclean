@@ -1,9 +1,9 @@
 from ..handler import TextHandler
-from tkinter import filedialog, scrolledtext
 from auxiclean import MAINLOGGER, Selector
 from timeit import default_timer as timer
 from .settings_gui import SettingsGUI
 from ..managers import ConfigManager
+from tkinter import scrolledtext, filedialog, messagebox
 import auxiclean
 import tkinter as tk
 import os
@@ -70,7 +70,8 @@ class Browser:
         # adapted from this SO post:
         # https://stackoverflow.com/a/41959785/6362595
         # Add text widget to display logging info
-        self.logBox = scrolledtext.ScrolledText(self.frame, state='disabled')
+        self.logBox = scrolledtext.ScrolledText(self.frame,
+                                                state='disabled')
         self.logBox.configure(font='TkFixedFont')
         self.logBox.grid(sticky=tk.W + tk.E + tk.S, columnspan=3)
 
@@ -149,7 +150,8 @@ class Browser:
     def select_file(self):
         data_file = filedialog.askopenfile(parent=self.master,
                                            mode='rb',
-                                           title='Sélectioner Fichier Excel')
+                                           title='Sélectioner'
+                                                 ' Fichier Excel')
         if data_file is not None:
             path = data_file.name
             data_file.close()
@@ -169,4 +171,4 @@ class Browser:
                 " fichier suivant est fermée:\n\n %s \n\n"
                 "Si ce n'est pas le cas, la distribution ne pourra\n"
                 " pas être écrite dans le fichier." % path)
-        tk.messagebox.showinfo("Attention", text)
+        messagebox.showinfo("Attention", text)
