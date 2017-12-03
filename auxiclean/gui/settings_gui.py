@@ -1,6 +1,7 @@
 from .auxiliary_window import AuxiliaryWindow
 from ..managers.config_manager import (NonUniquePriority, NonValidPriority,
                                        MissingPriority)
+from tkinter import messagebox
 import logging
 import tkinter as tk
 
@@ -105,6 +106,9 @@ class SettingsGUI(AuxiliaryWindow):
         except MissingPriority as e:
             self._logger.error("There is a missing priority.")
             self._logger.error(str(e))
+            messagebox.showerror("Erreur configuration",
+                                 "Les critères doivent"
+                                 " tous être différents.")
             return
         except NonValidPriority as e:
             self._logger.error("There is a non valid priority.")
@@ -113,8 +117,13 @@ class SettingsGUI(AuxiliaryWindow):
         except NonUniquePriority as e:
             self._logger.error("There is non unique priorities.")
             self._logger.error(str(e))
+            messagebox.showerror("Erreur configuration",
+                                 "Les critères doivent"
+                                 " tous être différents.")
             return
         self.config_manager.write_config()
+        messagebox.showinfo("Configuration",
+                            "Les paramètres ont été enregistrés.")
 
     def create_ok_button(self):
         self.okbutton = tk.Button(self.frame, text="Quitter",
