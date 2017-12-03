@@ -29,7 +29,7 @@ class Selector:
         self.logger.setLevel(loglevel)
         self.master = master  # if in a GUI
         # load courses and candidates from excel file
-        self.excel_mgr = ExcelFileManager(path)
+        self.excel_mgr = ExcelFileManager(path, loglevel=loglevel)
         self.courses = self.excel_mgr.courses
         self.candidates = self.excel_mgr.candidates
         # print courses and candidates

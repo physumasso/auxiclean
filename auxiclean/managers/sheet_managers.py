@@ -2,12 +2,17 @@ from ..candidate import Candidate
 from ..course import Course
 from ..exceptions import ExcelError
 from openpyxl.styles import Alignment, colors, PatternFill, Font
-import warnings
+import logging
 
 
 class BaseSheetManager:
-    def __init__(self, workbook):
+    _loggername = None
+
+    def __init__(self, workbook, loglevel=logging.INFO):
         self.wb = workbook
+        logging.basicConfig()
+        self._logger = logging.getLogger(self._loggername)
+        self._logger.setLevel(loglevel)
 
     def _find_max_columns(self, titles_row):
         for i, cell in enumerate(titles_row):
@@ -25,6 +30,8 @@ class BaseSheetManager:
 
 
 class CoursesSheetManager(BaseSheetManager):
+    _loggername = "auxiclean.managers.courses_sheet_manager"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._courses = None
@@ -57,6 +64,8 @@ class CoursesSheetManager(BaseSheetManager):
 
 
 class CandidatesSheetManager(BaseSheetManager):
+    _loggername = "auxiclean.managers.candidate_sheet_manager"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._candidates = None
@@ -115,6 +124,7 @@ class CandidatesSheetManager(BaseSheetManager):
 
 
 class DistributionSheetManager(BaseSheetManager):
+    _loggername = "auxiclean.managers.distribution_sheet_manager"
 
     def write_distribution(self, distribution):
         # get sheet
@@ -174,6 +184,7 @@ class DistributionSheetManager(BaseSheetManager):
         else:
             # sheet exists, warn user, but create one
             ws = workbook.create_sheet("Distribution")
-            warnings.warn("A Distribution sheet already exists in destination."
-                          " A new one will be created: %s." % ws.title)
+            self._logger.warning("A Distribution sheet already exists"
+                                 " in destination."
+                                 " A new one will be created: %s." % ws.title)
         return ws
