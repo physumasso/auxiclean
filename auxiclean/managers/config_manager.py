@@ -35,7 +35,7 @@ class MissingPriority(Exception):
 class ConfigManager:
     def __init__(self, path=DEFAULT_CONFIG_PATH, loglevel=logging.INFO):
         logging.basicConfig()
-        self._logger = logging.getLogger("ConfigManager")
+        self._logger = logging.getLogger("auxiclean.managers.config_manager")
         self._logger.setLevel(loglevel)
 
         self._config = configparser.ConfigParser()

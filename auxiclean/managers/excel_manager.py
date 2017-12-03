@@ -7,13 +7,14 @@ import logging
 
 class ExcelFileManager:
     def __init__(self, path, loglevel=logging.INFO):
-        self.logger = logging.getLogger("auxiclean.managers.excelfilemanager")
-        self.logger.setLevel(loglevel)
+        logging.basicConfig()
+        self._logger = logging.getLogger("auxiclean.managers.excelfilemanager")
+        self._logger.setLevel(loglevel)
 
         self.path = path
         self.wb = load_workbook(path)
-        self._courses = CoursesSheetManager(self.wb)
-        self._candidates = CandidatesSheetManager(self.wb)
+        self._courses = CoursesSheetManager(self.wb, loglevel=loglevel)
+        self._candidates = CandidatesSheetManager(self.wb, loglevel=loglevel)
         self._checkup()
         self._distribution = None
 
@@ -27,7 +28,9 @@ class ExcelFileManager:
 
     def write_distribution(self, distribution):
         if self._distribution is None:
-            self._distribution = DistributionSheetManager(self.wb)
+            level = self._logger.level
+            self._distribution = DistributionSheetManager(self.wb,
+                                                          loglevel=level)
         self._distribution.write_distribution(distribution)
         self.save()
 
@@ -68,19 +71,19 @@ class ExcelFileManager:
             if d is None or d.lower() == "générale":
                 continue
             if d not in all_courses_disciplines:
-                self.logger.warning("La discipline '%s' de %s n'est pas dans"
-                                    " la liste de toutes les"
-                                    " disciplines des cours." %
-                                    (d, candidate.name))
+                self._logger.warning("La discipline '%s' de %s n'est pas dans"
+                                     " la liste de toutes les"
+                                     " disciplines des cours." %
+                                     (d, candidate.name))
         for course in self.courses:
             d = course.discipline.lower()
             if d is None or d.lower() == "générale":
                 continue
             if d not in all_candidates_disciplines:
-                self.logger.warning("La discipline '%s' du cours %s n'est"
-                                    " pas dans"
-                                    " la liste de toutes les disciplines des"
-                                    " candidatures." % (d, course.code))
+                self._logger.warning("La discipline '%s' du cours %s n'est"
+                                     " pas dans"
+                                     " la liste de toutes les disciplines des"
+                                     " candidatures." % (d, course.code))
 
     def _choice_in_courses(self, choice):
         for course in self.courses:

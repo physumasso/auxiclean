@@ -3,7 +3,6 @@ from openpyxl import load_workbook
 from auxiclean import Selector
 from auxiclean.exceptions import ExcelError
 from collections import OrderedDict
-import warnings
 
 
 class TestExcelManager(TestBase):
@@ -65,14 +64,7 @@ class TestExcelManager(TestBase):
         wb.save(self.data_path)
         del wb
         # call selector and check that already existing sheet is not erased
-        # also check that a user warning is raised
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            self.selector = Selector(self.data_path)
-            # check a warning is raised (only one)
-            self.assertEqual(len(w), 1)
-            self.assertIn("Distribution sheet already exists",
-                          str(w[-1].message))
+        self.selector = Selector(self.data_path)
         # reload wb
         wb = load_workbook(self.data_path)
         self.assertIn("Distribution1", wb.sheetnames)
