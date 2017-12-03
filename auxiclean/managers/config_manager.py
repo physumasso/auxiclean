@@ -12,11 +12,24 @@ DEFAULT_PARAMETERS = {"last_excel_file": "",
                                      "nobels",
                                      "gpa",
                                      ),
-                      "loglevel": logging.CRITICAL
+                      "loglevel": logging.CRITICAL,
+                      "excel_file_open_warning": True,
                       }
 
 PARAMETERS = DEFAULT_PARAMETERS.keys()
 PRIORITY_PARAMS = DEFAULT_PARAMETERS["priorities"]
+
+
+class NonUniquePriority(Exception):
+    pass
+
+
+class NonValidPriority(Exception):
+    pass
+
+
+class MissingPriority(Exception):
+    pass
 
 
 class ConfigManager:
@@ -29,6 +42,7 @@ class ConfigManager:
         self._priorities = None
         self._last_excel_file = None
         self._loglevel = None
+        self._excel_file_open_warning = None
         # For now, this file is only at one place possible.
         if os.path.exists(path):
             self._logger.info("Loading config from %s" % path)
@@ -46,16 +60,38 @@ class ConfigManager:
 
     @priorities.setter
     def priorities(self, value):
-        value = tuple(eval(value))  # convert string tuple to real tuple
+        if isinstance(value, str):
+            value = tuple(eval(value))  # convert string tuple to real tuple
         # check that all the priorities are in the default list
         for v in value:
             if v not in PRIORITY_PARAMS:
-                raise ValueError("%s not a valid priority." % v)
+                raise NonValidPriority("%s not a valid priority." % v)
         # check that all priorities are there
         for v in PRIORITY_PARAMS:
             if v not in value:
-                raise ValueError("%v should be set as a priority." % v)
+                raise MissingPriority("%s should be set as a priority." % v)
+        # check that every priority is unique
+        uniques = []
+        for v in value:
+            if v not in uniques:
+                uniques.append(v)
+            else:
+                raise NonUniquePriority("%s appears multiple times." % v)
         self._priorities = tuple(value)
+
+    @property
+    def excel_file_open_warning(self):
+        if self._excel_file_warning is None:
+            raise ValueError("Excel File warning not loaded.")
+        return self._excel_file_warning
+
+    @excel_file_open_warning.setter
+    def excel_file_open_warning(self, value):
+        if isinstance(value, str):
+            value = eval(value)
+        if not isinstance(value, bool):
+            raise TypeError("excel file warning should be a boolean.")
+        self._excel_file_warning = value
 
     @property
     def loglevel(self):
@@ -79,8 +115,21 @@ class ConfigManager:
 
     def load_config(self, path=DEFAULT_CONFIG_PATH):
         self._config.read(path)
+        write_new_config = False
         for param in PARAMETERS:
-            setattr(self, param, self._config["PARAMETERS"][param])
+            try:
+                setattr(self, param, self._config["PARAMETERS"][param])
+            except KeyError:
+                # there is a missing parameter in config file => set default
+                self._logger.error("Missing parameter in config file : %s" %
+                                   param)
+                self._logger.error("Setting to default.")
+                st = str(DEFAULT_PARAMETERS[param])
+                self._config["PARAMETERS"][param] = st
+                setattr(self, param, self._config["PARAMETERS"][param])
+                write_new_config = True
+        if write_new_config:
+            self.write_config(path=path)
 
     def setdefaults(self):
         self._logger.info("Setting default parameters.")
@@ -89,7 +138,7 @@ class ConfigManager:
             setattr(self, param, value)
 
     def write_config(self, path=DEFAULT_CONFIG_PATH):
-        self._logger.info("Prepare to write config file.")
+        self._logger.debug("Prepare to write config file.")
         params = {}
         for param in PARAMETERS:
             toset = str(getattr(self, param))
