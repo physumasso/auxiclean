@@ -13,9 +13,10 @@ logdict = {"DEBUG": logging.DEBUG,
            "CRITICAL": logging.CRITICAL}
 
 
-priorities_traduction = {"course_given": "Nombre de fois le cours a été donné",
+priorities_traduction = {"is_graduate": "Étudiants gradués ont priorité",
+                         "course_given": "Nombre de fois le cours a été donné",
                          "total_courses_given": "Nombre total de cours donné",
-                         "scolarity": "Cycle d'étude",
+                         "scolarity": "Cycle d'étude (PhD > Msc > bac)",
                          "nobels": "Nombre de prix d'enseignement",
                          "gpa": "Moyenne globale (notes)"}
 
