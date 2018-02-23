@@ -12,9 +12,9 @@ class Candidate:
         self.discipline = (discipline.lower().strip() if discipline is not None
                            else "générale")
         self.gpa = float(gpa) if gpa is not None else None
-        # tell if candidate is master or PhD by 1, undergraduate by 0
-        # we use number instead of bool for easy comparison
-        self.is_graduate = 1 if self.scolarity > 1 else 0
+        # tell if candidate is master or PhD
+        # note: True > False returns True and False > True returns False
+        self.is_graduate = True if self.scolarity > 1 else False
 
     @property
     def next_choice(self):
