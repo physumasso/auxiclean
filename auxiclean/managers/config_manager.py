@@ -123,8 +123,9 @@ class ConfigManager:
         for param in PARAMETERS:
             try:
                 setattr(self, param, self._config["PARAMETERS"][param])
-            except KeyError:
+            except (KeyError, MissingPriority):
                 # there is a missing parameter in config file => set default
+                # or missing priority (changing to a new version)
                 self._logger.error("Missing parameter in config file : %s" %
                                    param)
                 self._logger.error("Setting to default.")
