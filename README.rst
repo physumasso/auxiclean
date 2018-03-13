@@ -21,9 +21,8 @@ Le code source initial a été écrit par Jérémie Tanguay (`Tanjay94 <https://
 Compatibilité
 -------------
 
-Ce projet fonctionne au moins sur Python version 3.5 et 3.6.
-Il fonctionne possiblement pour d'autres versions plus grande ou égale à la version 3 de Python
-mais ne sont pas testées. **Ne fonctionne pas pour Python 2.7 ou inférieur.**
+Ce projet fonctionne au moins sur Python version 3.6.
+**Ne fonctionne pas pour d'autres versions de Python.**
 
 Installation simple
 -------------------
