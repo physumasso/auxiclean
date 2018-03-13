@@ -61,13 +61,7 @@ after_success:
 
 before_deploy:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then pip install pyinstaller; fi
-  # for macos we compress the .app bundle to be able to upload it on github
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd dist; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r auxiclean_osx.zip auxiclean_osx.app; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd ..; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_linux run.py; fi
-
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then python bundle.py; fi
 deploy:
   - provider: releases
     api_key:

@@ -136,16 +136,25 @@ class Browser:
                 # print full traceback
                 tb = traceback.format_exc()
                 self._logger.error(tb)
-            self._logger.info("STOP - ERREUR")
+            self._logger.critical("STOP - ERREUR")
         else:
-            self._logger.info("Succès!")
+            self._forceprint("Succès!")
         finally:
             end = timer()
             if start is None:
                 # an error occured before the call to the selector
                 return
-            self._logger.info("Temps d'exécution = %.3f secondes" %
-                              (end - start))
+            self._forceprint("Temps d'exécution = %.3f secondes" %
+                             (end - start))
+
+    def _forceprint(self, text):
+        # method to force print into the logging tag even though
+        # the loglevel is higher
+        # to force print this, adjust the level and set it back
+        previous_level = self._logger.level
+        self._logger.setLevel(logging.INFO)
+        self._logger.info(text)
+        self._logger.setLevel(previous_level)
 
     def select_file(self):
         data_file = filedialog.askopenfile(parent=self.master,

@@ -5,14 +5,18 @@ import os
 
 DEFAULT_CONFIG_PATH = os.path.join(os.path.expanduser("~"),
                                    ".config", "auxiclean")
+
+
+# the priorities key should match the attributes name of a Candidate object
 DEFAULT_PARAMETERS = {"last_excel_file": "",
-                      "priorities": ("course_given",
+                      "priorities": ("is_graduate",
+                                     "course_given",
                                      "total_courses_given",
                                      "scolarity",
                                      "nobels",
                                      "gpa",
                                      ),
-                      "loglevel": logging.CRITICAL,
+                      "loglevel": logging.ERROR,
                       "excel_file_open_warning": True,
                       }
 
@@ -119,8 +123,9 @@ class ConfigManager:
         for param in PARAMETERS:
             try:
                 setattr(self, param, self._config["PARAMETERS"][param])
-            except KeyError:
+            except (KeyError, MissingPriority):
                 # there is a missing parameter in config file => set default
+                # or missing priority (changing to a new version)
                 self._logger.error("Missing parameter in config file : %s" %
                                    param)
                 self._logger.error("Setting to default.")
