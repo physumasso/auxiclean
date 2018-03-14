@@ -2,8 +2,6 @@ environment:
   matrix:
     - PYTHON_VERSION: 3.6
       MINICONDA: C:\Miniconda36
-    - PYTHON_VERSION: 3.5
-      MINICONDA: C:\Miniconda35
 init:
   - "ECHO %PYTHON_VERSION% %MINICONDA%"
   - "ECHO %APPVEYOR_REPO_TAG_NAME%"
@@ -19,10 +17,8 @@ test_script:
 build: off
 build_script:
   # build exe file using pyinstaller from main run script
-  - IF "%PYTHON_VERSION%"=="3.6" (
-      pip install pyinstaller &&
-      python bundle.py
-    )     
+  - pip install pyinstaller
+  - python bundle.py
 artifacts:
   - path: dist/auxiclean_windows.exe
     name: auxiclean_windows
@@ -32,7 +28,7 @@ artifacts:
 deploy:
   appveyor_repo_tag: true
   tag: $(APPVEYOR_REPO_TAG_NAME)
-  relsease: $(APPVEYOR_REPO_TAG_NAME)
+  release: $(APPVEYOR_REPO_TAG_NAME)
   description: ""
   provider: GitHub
   force_update: false
