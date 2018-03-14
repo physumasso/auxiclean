@@ -12,6 +12,9 @@ class Candidate:
         self.discipline = (discipline.lower().strip() if discipline is not None
                            else "générale")
         self.gpa = float(gpa) if gpa is not None else None
+        # tell if candidate is master or PhD
+        # note: True > False returns True and False > True returns False
+        self.is_graduate = True if self.scolarity > 1 else False
 
     @property
     def next_choice(self):
@@ -68,6 +71,7 @@ class CourseCandidate:
         self.same_discipline = self._discipline_matches(candidate.discipline,
                                                         course.discipline)
         self.gpa = candidate.gpa
+        self.is_graduate = candidate.is_graduate
         self._priorities = priorities
 
     def _discipline_matches(self, candidate_discipline, course_discipline):

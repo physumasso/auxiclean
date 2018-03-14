@@ -2,26 +2,19 @@ ourceast_finish: true
 language: python
 # use matrix implementation for osx build
 # this is needed to use the language:generic
-env: DEPLOY_FILE="dist/auxiclean_linux"
 matrix:
   include:
-    - os: osx
-      language: generic
-      python: 3.5
-      env: 
-        - TRAVIS_PYTHON_VERSION=3.5
-        - DEPLOY_FILE="dist/auxiclean_osx.zip"
-
     - os: osx
       language: generic
       python: 3.6
       env: 
         - TRAVIS_PYTHON_VERSION=3.6
         - DEPLOY_FILE="dist/auxiclean_osx.zip"
-os: linux
-python:
-  - 3.5
-  - 3.6
+    
+    - os: linux
+      python: 3.6
+      env: 
+        - DEPLOY_FILE="dist/auxiclean_linux"
 
 # we use python from miniconda in order to be able to create virtual environments easily
 before_install:
@@ -35,11 +28,8 @@ before_install:
   - bash miniconda.sh -b -p $HOME/miniconda;
   - export PATH="$HOME/miniconda/bin:$PATH"
   - source $HOME/miniconda/bin/activate
-  - conda update --yes conda
-  # for now, there is a bug with conda v4.3.27 on linux for pyinstaller, use the version before
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
-      conda install --yes conda==4.3.25;
-    fi
+  # update conda for osx
+  - conda update --yes --all
   - conda create -q --yes -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
 # install auxiclean package
@@ -50,34 +40,22 @@ script:
   - pytest
 after_success:
   # report coverage in coveralls only for linux build with python 3.6
-  - if ([[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && 
-        [[ "$TRAVIS_OS_NAME" == "linux" ]]); then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       pip install coveralls;
     fi
-  - if ([[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && 
-        [[ "$TRAVIS_OS_NAME" == "linux" ]]); then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       coveralls;
     fi
 
 before_deploy:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then pip install pyinstaller; fi
-  # for macos we compress the .app bundle to be able to upload it on github
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd dist; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r auxiclean_osx.zip auxiclean_osx.app; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd ..; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pyinstaller --onefile --windowed --clean --name=auxiclean_linux run.py; fi
-
+  - pip install pyinstaller
+  # there is a bug with pyinstaller and anaconda. Reverting to python 3.6.0 when bundling seems to fix this.
+  - conda install --yes python==3.6.0
+  - python bundle.py
 deploy:
   - provider: releases
     api_key:
       secure: "a1HB75QQK1XKUCNjNdBv7ZT/vn4WV+9PAycEiOgBDWpyi8VqDzeOLIqkoZ6mmXgy7ORztTMYW5QbU/ztIptg+g58JV49rxr2oAFKHweeA3CykkcWuEx4h0/RgSmdHoFbsuZuIYswV5FPFjSaokyd0szcnPBS1Fuo4u4TiPo5xEmMhNVhIKZUmIlqmWZ18yElk2DyTA84zTY86HJaQPjYGKxS7EIZ1q7hfTgBFFRVD4hnoFeP5R1eXfR8TIU0/IgY46AXnrezfLowmsv1XOrS+81sLH7h6LBj/QGI4WujXXT9KWqxtFHiBB9ikapTmL1XSBLA3XeZGe160FyyRhvHUpO1lHrFxFieTYCgMyRgPbGkLrFKIRzy97pHFkSpASX9Jis4Zp1PF2hKvpNaXOn7AwcwD4Wu7Gt7NWLLsGRc7GYumIaVWnL8GT0ZqxaqR3NihXiG8ILytWzcEMF6gTsAvZjKcnio/1I9LFAYI5xti5npZjWMt0/T498UcFVdMIt5en5T+YPgW7rMrswG4WvDdvk3oHtk6ZKSUKibVvAzUfsEMD6BRngTXOEFH7pSUJo8N+leF+UeeuWYScCAVGHf9op0N6eJC4ETImXTtxGDYZ7Tyf0ZEfdesCtzL0rP5IUJbMSUg+DveflbHjm991dxDJQwedvka8TNwmsGeo2Z3kQ="
-    file: $DEPLOY_FILE
-    skip_cleanup: true
-    on:
-      tags: true
-      python: 3.6
-
     file: $DEPLOY_FILE
     skip_cleanup: true
     on:
