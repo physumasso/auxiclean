@@ -29,7 +29,7 @@ if platform == "linux":
 elif platform == "darwin":
     print("Bundling for OSX.")
     os.system(osx_command)
-elif platform == "windows":
+elif platform == "win32":
     print("Bundling for Windows.")
     os.system(windows_command)
 else:
