@@ -47,8 +47,9 @@ Ensuite, cloner ou télécharger le projet sur le `répertoire officiel
 <https://github.com/physumasso/auxiclean>`__ du projet sur GitHub
 et décompresser le fichier si nécéssaire.
 
-Pour installer le module, il faut executer le script d'installation `setup.py`::
+Pour installer le module, il faut d'abord installer les prérequis et ensuite executer le script d'installation `setup.py`::
 
+  $ pip install -r requirements.txt
   $ python setup.py install
 
 Pour une installation de développement, utiliser l'argument ``develop`` au lieu

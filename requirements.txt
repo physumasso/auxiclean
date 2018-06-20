@@ -1,0 +1,5 @@
+openpyxl
+pytest
+pytest-cov
+coverage
+pep8

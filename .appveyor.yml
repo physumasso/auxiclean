@@ -10,6 +10,7 @@ install:
   - conda update --yes conda
   - conda create -y -q -n test-environment python=%PYTHON_VERSION%
   - activate test-environment
+  - pip install -r requirements.txt
   - python setup.py develop
 test_script:
   - pytest

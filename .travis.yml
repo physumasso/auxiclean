@@ -34,6 +34,7 @@ before_install:
   - source activate test-environment
 # install auxiclean package
 install:
+  - pip install -r requirements.txt
   - python setup.py develop
 # execute tests
 script:
@@ -49,8 +50,7 @@ after_success:
 
 before_deploy:
   - pip install pyinstaller
-  # there is a bug with pyinstaller and anaconda. Reverting to python 3.6.0 when bundling seems to fix this.
-  - conda install --yes python==3.6.0
+  - conda install --yes python==$TRAVIS_PYTHON_VERSION
   - python bundle.py
 deploy:
   - provider: releases
