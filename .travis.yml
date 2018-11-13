@@ -6,13 +6,13 @@ matrix:
   include:
     - os: osx
       language: generic
-      python: 3.6
+      python: 3.7
       env: 
-        - TRAVIS_PYTHON_VERSION=3.6
+        - TRAVIS_PYTHON_VERSION=3.7
         - DEPLOY_FILE="dist/auxiclean_osx.zip"
     
     - os: linux
-      python: 3.6
+      python: 3.7
       env: 
         - DEPLOY_FILE="dist/auxiclean_linux"
 
@@ -40,7 +40,7 @@ install:
 script:
   - pytest
 after_success:
-  # report coverage in coveralls only for linux build with python 3.6
+  # report coverage in coveralls only for linux build
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       pip install coveralls;
     fi
@@ -60,4 +60,4 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      python: 3.6
+      python: 3.7
