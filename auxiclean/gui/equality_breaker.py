@@ -73,8 +73,9 @@ class EqualityBreaker(AuxiliaryWindow):
             else:
                 # confirm == "no"
                 return
-        self._logger.warn("Nombre de candidatures choisies invalide (%i/%i)" %
-                          (len(choices), self.nchoices))
+        self._logger.warning("Nombre de candidatures choisies"
+                             " invalide (%i/%i)" %
+                             (len(choices), self.nchoices))
 
     def get_checkboxes_results(self):
         results = []
