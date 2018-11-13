@@ -34,11 +34,11 @@ def command_line_input(list_equalities, nchoices, course, loglevel):
                 try:
                     choix = int(ans) - 1
                 except ValueError:
-                    logger.warn("SVP, veuillez entrer un nombre entier.")
+                    logger.warning("SVP, veuillez entrer un nombre entier.")
                     continue
                 else:
                     if choix < 0:
-                        logger.warn("SVP, veuillez entrer un nombre > 0.")
+                        logger.warning("SVP, veuillez entrer un nombre > 0.")
                         continue
                 good_ans = True
                 choices.append(list_equalities[choix])
@@ -53,7 +53,7 @@ def command_line_input(list_equalities, nchoices, course, loglevel):
             yes = yes.lower()
             if yes not in ("oui", "o", "y", "yes",
                            "non", "n", "no"):
-                logger.warn("Veuillez entrer oui ou non SVP")
+                logger.warning("Veuillez entrer oui ou non SVP")
                 continue
             else:
                 good_ans = True
