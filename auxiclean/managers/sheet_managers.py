@@ -22,6 +22,13 @@ class BaseSheetManager:
                 return i
         return len(titles_row)
 
+    def _is_empty_row(self, row):
+        """Sometimes openpyxl says a row is not empty because it has a styling
+        or whatever. Check if it is really empty.
+        """
+        all_values = [cell.value for cell in row]
+        return not any(all_values)
+
     def get_sheet(self, workbook, sheetname):
         for sheet in workbook.worksheets:
             if sheet.title.lower() == sheetname.lower():
@@ -54,6 +61,8 @@ class CoursesSheetManager(BaseSheetManager):
         courses_data = [c[:max_column] for c in courses_data]
         courses = []
         for course in courses_data:
+            if self._is_empty_row(course):
+                continue
             d = {label.value.lower(): cell.value
                  for label, cell in zip(titles, course)}
             courses.append(d)
@@ -87,6 +96,8 @@ class CandidatesSheetManager(BaseSheetManager):
         candidates_data = [c[:max_column] for c in candidates_data]
         candidates = []
         for i, candidate in enumerate(candidates_data):
+            if self._is_empty_row(candidate):
+                continue
             d = {label.value.lower(): cell.value
                  for label, cell in zip(titles, candidate)}
             d["choix"] = self._get_list_from_str(d["choix"])
@@ -102,9 +113,11 @@ class CandidatesSheetManager(BaseSheetManager):
                           x["cote z"], *x["choix"]) for x in candidates]
 
     def _checkup_candidate_data(self, data, i):
-        # i == candidate index row
+        # i == candidate index row in list of candidates
+        real_line_index = i + 2
         if data["nom"] is None:
-            raise ExcelError("Candidature ligne %i n'a pas de nom." % i)
+            raise ExcelError(
+                    "Candidature ligne %i n'a pas de nom." % real_line_index)
         if data["maximum"] is None:
             raise ExcelError("Candidature %s n'a pas de maximum." %
                              data["nom"])
