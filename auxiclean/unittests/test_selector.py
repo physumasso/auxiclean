@@ -61,14 +61,14 @@ class TestBase(unittest.TestCase):
         rows = ws.iter_rows(min_col=1, max_col=8, min_row=2,
                             max_row=ncandidates + 1)
         for row, (c, c_data) in zip(rows, self.candidates.items()):
-                row[0].value = c
-                row[1].value = c_data["maximum"]
-                row[2].value = c_data["scolarity"]
-                row[3].value = ", ".join(c_data["courses given"])
-                row[4].value = c_data["nobels"]
-                row[5].value = c_data["discipline"]
-                row[6].value = ", ".join(c_data["choices"])
-                row[7].value = c_data["gpa"]
+            row[0].value = c
+            row[1].value = c_data["maximum"]
+            row[2].value = c_data["scolarity"]
+            row[3].value = ", ".join(c_data["courses given"])
+            row[4].value = c_data["nobels"]
+            row[5].value = c_data["discipline"]
+            row[6].value = ", ".join(c_data["choices"])
+            row[7].value = c_data["gpa"]
         wb.save(self.data_path)
 
     def tearDown(self):
